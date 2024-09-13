@@ -1,10 +1,19 @@
-[gd_resource type="ProjectSettings" load_steps=4 format=2]
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
 
 [application]
 
 config/name="PongGame"
 config/description="A simple Pong game illustrating movement, collision detection, and Cartesian coordinates."
 run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.3")
 
 [rendering]
 
