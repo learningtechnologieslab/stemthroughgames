@@ -1,0 +1,11 @@
+[gd_resource type="ProjectSettings" load_steps=4 format=2]
+
+[application]
+
+config/name="PongGame"
+config/description="A simple Pong game illustrating movement, collision detection, and Cartesian coordinates."
+run/main_scene="res://main.tscn"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"

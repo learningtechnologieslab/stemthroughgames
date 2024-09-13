@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=2]
+
+[node name="Main" type="Node2D"]
+script="res://main_script.gd"
+
+[node name="PaddleLeft" type="Sprite2D"]
+position = Vector2(50, 300)
+texture = ExtResource( 1 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleLeft"]
+shape = RectangleShape2D.new()
+[node name="PaddleRight" type="Sprite2D"]
+position = Vector2(750, 300)
+texture = ExtResource( 2 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PaddleRight"]
+shape = RectangleShape2D.new()
+[node name="Ball" type="Sprite2D"]
+position = Vector2(400, 300)
+texture = ExtResource( 3 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = CircleShape2D.new()
+
+[node name="Label" type="Label"]
+position = Vector2(10, 10)
+text = "Pong Game"
