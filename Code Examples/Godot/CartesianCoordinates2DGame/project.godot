@@ -1,0 +1,11 @@
+[gd_resource type="ProjectSettings" load_steps=4 format=2]
+
+[application]
+
+config/name="CartesianCoordinates2DGame"
+config/description="A project illustrating Cartesian coordinates in 2D video games."
+run/main_scene="res://main.tscn"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
