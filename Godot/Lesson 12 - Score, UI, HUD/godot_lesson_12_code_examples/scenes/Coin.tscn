@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://day12coin"]
+
+[ext_resource type="Script" path="res://scripts/Coin.gd" id="1_coin"]
+
+[sub_resource type="CircleShape2D" id="coin_collision"]
+radius = 14.0
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Coin.tscn  –  Collectible coin (Area2D)
+;
+; When the Player (CharacterBody2D in group "player") enters this area,
+; Coin.gd calls player.add_score(point_value), which emits score_changed
+; and the HUD label updates automatically.
+; ─────────────────────────────────────────────────────────────────────────────
+
+[node name="Coin" type="Area2D"]
+script = ExtResource("1_coin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("coin_collision")
+
+[node name="Visual" type="ColorRect" parent="."]
+position = Vector2(-14, -14)
+size = Vector2(28, 28)
+color = Color(1.0, 0.84, 0.0, 1)
+
+[node name="Label" type="Label" parent="."]
+position = Vector2(-6, -10)
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.3, 0.2, 0.0, 1)
+text = "C"

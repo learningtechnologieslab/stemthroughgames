@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Demo — Jump Arc Parabola Grapher</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #1B5E20;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  header {
+    padding: 12px 24px;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  header h1 { font-size: 22px; }
+  header .sub { font-size: 13px; color: #A5D6A7; margin-top: 2px; }
+
+  .main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    gap: 0;
+  }
+
+  .sidebar {
+    width: 300px;
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.25);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+  }
+
+  .canvas-area {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  canvas {
+    display: block;
+    background: #FAFAFA;
+    border-radius: 10px;
+  }
+
+  .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #A5D6A7;
+    margin-bottom: 4px;
+  }
+
+  .slider-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slider-wrap .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .slider-wrap .val {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    background: rgba(255,255,255,0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #F9A825;
+  }
+  input[type="range"] { width: 100%; accent-color: #4CAF50; }
+
+  .formula-box {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .formula-box .big {
+    font-size: 17px;
+    font-weight: bold;
+    color: #F9A825;
+    font-family: 'Courier New', monospace;
+  }
+  .formula-box .vars { color: #80CBC4; font-size: 12px; }
+
+  .btn {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn-jump { background: #4CAF50; color: white; }
+  .btn-clear { background: rgba(255,255,255,0.2); color: white; font-size: 13px; padding: 7px; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .info-cell {
+    background: rgba(0,0,0,0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .info-cell .il { font-size: 10px; color: #A5D6A7; }
+  .info-cell .iv { font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #F9A825; }
+
+  .note {
+    font-size: 11px;
+    color: #80CBC4;
+    font-style: italic;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>⛏️ Jump Arc — Parabola Demonstration</h1>
+    <div class="sub">Teacher Demo  ·  STEM through Games Day 6  ·  Minecraft Education</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="sidebar">
+
+    <div class="slider-wrap">
+      <div class="label">JUMP_FORCE (v₀)</div>
+      <div class="row">
+        <span>Initial velocity</span>
+        <span class="val" id="jfVal">10.0</span>
+      </div>
+      <input type="range" id="jfSlider" min="2" max="30" value="10" step="0.5"
+             oninput="update()">
+      <div class="note">Positive = upward (Minecraft). In Godot: JUMP_VELOCITY = −500 (negative)</div>
+    </div>
+
+    <div class="slider-wrap">
+      <div class="label">GRAVITY (g)</div>
+      <div class="row">
+        <span>Per-tick acceleration</span>
+        <span class="val" id="gVal">−0.60</span>
+      </div>
+      <input type="range" id="gSlider" min="-3" max="-0.1" value="-0.6" step="0.05"
+             oninput="update()">
+      <div class="note">Negative = downward. In Godot: get_gravity() * delta (positive value)</div>
+    </div>
+
+    <div class="formula-box">
+      <div class="label">Parabola Formula</div>
+      <div class="big" id="formulaDisp">y = 10t − 0.3t²</div>
+      <div style="margin-top:6px;" class="vars">
+        y = position &nbsp;|&nbsp; t = tick number<br>
+        v₀ = JUMP_FORCE &nbsp;|&nbsp; g = GRAVITY<br>
+        <span style="color:#F9A825;">t² term makes it a quadratic → parabola!</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-cell"><div class="il">Peak height</div><div class="iv" id="peakH">—</div></div>
+      <div class="info-cell"><div class="il">Tick at peak</div><div class="iv" id="peakT">—</div></div>
+      <div class="info-cell"><div class="il">Total air ticks</div><div class="iv" id="totalT">—</div></div>
+      <div class="info-cell"><div class="il">Landing velocity</div><div class="iv" id="landV">—</div></div>
+    </div>
+
+    <button class="btn btn-jump" onclick="addTrace()">+ Add Trace</button>
+    <button class="btn btn-clear" onclick="clearTraces()">Clear All Traces</button>
+
+    <div class="note">
+      Tip: Add multiple traces with different settings to compare parabola shapes side by side.
+      Try increasing JUMP_FORCE vs. decreasing GRAVITY to get the same peak height — different physics, same result!
+    </div>
+
+  </div>
+
+  <div class="canvas-area">
+    <canvas id="mainCanvas" style="flex:1;"></canvas>
+  </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById('mainCanvas')
+const ctx = canvas.getContext('2d')
+
+const COLORS = ['#F44336','#2196F3','#FF9800','#9C27B0','#00BCD4','#E91E63']
+let colorIdx = 0
+
+let traces = []   // { jf, g, color, label }
+
+function getParams() {
+  return {
+    jf: parseFloat(document.getElementById('jfSlider').value),
+    g:  parseFloat(document.getElementById('gSlider').value)
+  }
+}
+
+function computeTrace(jf, g) {
+  const points = []
+  let v = jf, y = 0
+  points.push({ t: 0, y: 0, v: jf })
+  for (let t = 1; t <= 300; t++) {
+    v += g
+    y += v
+    points.push({ t, y, v })
+    if (y <= 0 && t > 1) break
+  }
+  // Snap last point to 0
+  if (points[points.length-1].y < 0) {
+    points[points.length-1].y = 0
+  }
+  return points
+}
+
+function update() {
+  const { jf, g } = getParams()
+  document.getElementById('jfVal').textContent = jf.toFixed(1)
+  document.getElementById('gVal').textContent  = g.toFixed(2)
+
+  // Formula display
+  const halfG = Math.abs(g / 2)
+  document.getElementById('formulaDisp').textContent =
+    `y = ${jf}t − ${halfG.toFixed(2)}t²`
+
+  // Compute stats
+  const pts = computeTrace(jf, g)
+  const peak = pts.reduce((a, b) => b.y > a.y ? b : a)
+  const last = pts[pts.length - 1]
+  document.getElementById('peakH').textContent  = `+${peak.y.toFixed(2)}`
+  document.getElementById('peakT').textContent  = peak.t
+  document.getElementById('totalT').textContent = pts.length - 1
+  document.getElementById('landV').textContent  = last.v.toFixed(2)
+
+  draw()
+}
+
+function addTrace() {
+  const { jf, g } = getParams()
+  traces.push({
+    jf, g,
+    color: COLORS[colorIdx % COLORS.length],
+    label: `JF=${jf}, G=${g}`
+  })
+  colorIdx++
+  update()
+}
+
+function clearTraces() {
+  traces = []
+  colorIdx = 0
+  update()
+}
+
+function draw() {
+  const W = canvas.offsetWidth
+  const H = canvas.offsetHeight
+  canvas.width  = W
+  canvas.height = H
+  if (W === 0 || H === 0) return
+
+  const { jf, g } = getParams()
+  const PAD = { top: 30, right: 30, bottom: 50, left: 60 }
+  const cW = W - PAD.left - PAD.right
+  const cH = H - PAD.top - PAD.bottom
+
+  // Determine y scale across all traces + current
+  let maxY = jf * 0.5 + 2
+  traces.forEach(tr => {
+    const pts = computeTrace(tr.jf, tr.g)
+    const peak = pts.reduce((a,b) => b.y > a.y ? b : a)
+    maxY = Math.max(maxY, peak.y * 1.15)
+  })
+
+  // Determine x scale
+  let maxT = computeTrace(jf, g).length
+  traces.forEach(tr => maxT = Math.max(maxT, computeTrace(tr.jf, tr.g).length))
+  maxT += 2
+
+  function sx(t) { return PAD.left + (t / maxT) * cW }
+  function sy(y) { return PAD.top + cH - (y / maxY) * cH }
+
+  // White background
+  ctx.fillStyle = '#FAFAFA'
+  ctx.fillRect(0, 0, W, H)
+
+  // Grid
+  ctx.strokeStyle = '#E8E8E8'
+  ctx.lineWidth = 1
+  for (let i = 1; i <= 5; i++) {
+    const gY = (maxY * i / 5)
+    ctx.beginPath()
+    ctx.moveTo(PAD.left, sy(gY))
+    ctx.lineTo(W - PAD.right, sy(gY))
+    ctx.stroke()
+    ctx.fillStyle = '#999'
+    ctx.font = '11px Arial'
+    ctx.textAlign = 'right'
+    ctx.fillText(gY.toFixed(1), PAD.left - 5, sy(gY) + 4)
+  }
+
+  // Ground line
+  ctx.strokeStyle = '#5D4037'
+  ctx.lineWidth = 2.5
+  ctx.beginPath()
+  ctx.moveTo(PAD.left, sy(0))
+  ctx.lineTo(W - PAD.right, sy(0))
+  ctx.stroke()
+  ctx.fillStyle = '#5D4037'
+  ctx.font = 'bold 11px Arial'
+  ctx.textAlign = 'left'
+  ctx.fillText('Ground (Y = 64)', PAD.left + 4, sy(0) - 5)
+
+  // Tick labels
+  ctx.fillStyle = '#999'
+  ctx.font = '11px Arial'
+  ctx.textAlign = 'center'
+  for (let t = 0; t <= maxT; t += Math.ceil(maxT / 8)) {
+    ctx.fillText(t, sx(t), H - PAD.bottom + 15)
+  }
+
+  // Axis labels
+  ctx.fillStyle = '#546E7A'
+  ctx.font = 'bold 12px Arial'
+  ctx.textAlign = 'center'
+  ctx.fillText('Tick (time step)', PAD.left + cW / 2, H - 5)
+  ctx.save()
+  ctx.translate(14, PAD.top + cH / 2)
+  ctx.rotate(-Math.PI / 2)
+  ctx.fillText('posY (blocks above ground)', 0, 0)
+  ctx.restore()
+
+  // Draw saved traces (dimmed)
+  traces.forEach(tr => {
+    const pts = computeTrace(tr.jf, tr.g)
+    ctx.strokeStyle = tr.color + '88'
+    ctx.lineWidth = 2
+    ctx.setLineDash([5, 3])
+    ctx.beginPath()
+    pts.forEach((p, i) => {
+      if (i === 0) ctx.moveTo(sx(p.t), sy(p.y))
+      else ctx.lineTo(sx(p.t), sy(p.y))
+    })
+    ctx.stroke()
+    ctx.setLineDash([])
+
+    // Trace label
+    const peak = pts.reduce((a, b) => b.y > a.y ? b : a)
+    ctx.fillStyle = tr.color
+    ctx.font = 'bold 11px Arial'
+    ctx.textAlign = 'left'
+    ctx.fillText(tr.label, sx(peak.t) + 5, sy(peak.y) - 5)
+  })
+
+  // Draw current trace (bright)
+  const pts = computeTrace(jf, g)
+  ctx.strokeStyle = '#2E7D32'
+  ctx.lineWidth = 3
+  ctx.beginPath()
+  pts.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(sx(p.t), sy(p.y))
+    else ctx.lineTo(sx(p.t), sy(p.y))
+  })
+  ctx.stroke()
+
+  // Dot at each point
+  ctx.fillStyle = '#2E7D32'
+  pts.forEach(p => {
+    ctx.beginPath()
+    ctx.arc(sx(p.t), sy(p.y), 3, 0, Math.PI * 2)
+    ctx.fill()
+  })
+
+  // Peak marker
+  const peak = pts.reduce((a, b) => b.y > a.y ? b : a)
+  ctx.strokeStyle = '#F9A825'
+  ctx.lineWidth = 1.5
+  ctx.setLineDash([5, 4])
+  ctx.beginPath()
+  ctx.moveTo(PAD.left, sy(peak.y))
+  ctx.lineTo(sx(peak.t), sy(peak.y))
+  ctx.stroke()
+  ctx.setLineDash([])
+  ctx.fillStyle = '#F9A825'
+  ctx.font = 'bold 12px Arial'
+  ctx.textAlign = 'right'
+  ctx.fillText(`Peak: +${peak.y.toFixed(2)}`, sx(peak.t) - 4, sy(peak.y) - 6)
+
+  // Peak dot
+  ctx.fillStyle = '#F9A825'
+  ctx.beginPath()
+  ctx.arc(sx(peak.t), sy(peak.y), 6, 0, Math.PI * 2)
+  ctx.fill()
+}
+
+window.addEventListener('resize', update)
+update()
+</script>
+</body>
+</html>

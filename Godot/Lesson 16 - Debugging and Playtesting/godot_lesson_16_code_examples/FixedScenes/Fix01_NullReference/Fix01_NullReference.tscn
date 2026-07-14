@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://fix01"]
+
+[ext_resource type="Script" path="res://FixedScenes/Fix01_NullReference/Fix01_NullReference.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(40, 40)
+
+[node name="Fix01_NullReference" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(320, 240)
+
+[node name="Sprite" type="ColorRect" parent="Player"]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(0.2, 0.5, 1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 500.0
+offset_bottom = 40.0
+text = "Fix 01: Null Reference — FIXED ✓"
+modulate = Color(0.3, 0.9, 0.4, 1)
+
+[node name="InstructionLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 620.0
+offset_bottom = 90.0
+text = "Press SPACE — the player now moves correctly.
+Node path corrected: 'Playar' → 'Player'."
+autowrap_mode = 3

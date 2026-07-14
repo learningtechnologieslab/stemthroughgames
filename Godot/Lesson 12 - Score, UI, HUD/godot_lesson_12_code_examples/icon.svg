@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#1B3A6B"/>
+  <!-- HUD bar -->
+  <rect x="8" y="8" width="112" height="28" rx="4" fill="#0D7377" opacity="0.9"/>
+  <!-- Score label placeholder -->
+  <rect x="14" y="14" width="40" height="10" rx="2" fill="#FFFFFF" opacity="0.7"/>
+  <!-- HP label placeholder -->
+  <rect x="62" y="14" width="28" height="10" rx="2" fill="#FFFFFF" opacity="0.7"/>
+  <!-- Timer label placeholder -->
+  <rect x="98" y="14" width="16" height="10" rx="2" fill="#F5A623" opacity="0.9"/>
+  <!-- Player block -->
+  <rect x="44" y="75" width="24" height="36" rx="3" fill="#3399FF"/>
+  <!-- Ground -->
+  <rect x="8" y="110" width="112" height="10" rx="2" fill="#339944"/>
+  <!-- Coin -->
+  <circle cx="100" cy="90" r="10" fill="#F5A623"/>
+  <text x="95" y="95" font-size="12" fill="#7A4A00" font-family="sans-serif" font-weight="bold">C</text>
+</svg>

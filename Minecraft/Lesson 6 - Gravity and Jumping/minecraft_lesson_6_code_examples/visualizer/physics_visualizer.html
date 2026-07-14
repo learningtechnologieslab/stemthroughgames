@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 6 — Gravity & Jump Physics Visualizer</title>
+<style>
+  /* ── Reset & Base ──────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark:   #1B5E20;
+    --green-mid:    #2E7D32;
+    --green-bright: #4CAF50;
+    --green-light:  #C8E6C9;
+    --brown:        #5D4037;
+    --stone:        #546E7A;
+    --sky-top:      #87CEEB;
+    --sky-bot:      #E0F7FA;
+    --gold:         #F9A825;
+    --white:        #FFFFFF;
+    --off-white:    #F9FBF9;
+    --text:         #1A1A1A;
+    --muted:        #546E7A;
+    --red:          #C62828;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ────────────────────────────────────────────── */
+  header {
+    background: var(--green-dark);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header .badge {
+    background: var(--green-bright);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+  header h1 { font-size: 20px; flex: 1; }
+  header .subtitle { font-size: 12px; color: var(--green-light); }
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  .layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 0;
+    height: calc(100vh - 57px);
+  }
+
+  /* ── Controls Panel ─────────────────────────────────────── */
+  .controls {
+    background: white;
+    border-right: 2px solid var(--green-light);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--green-mid);
+    border-bottom: 2px solid var(--green-light);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+
+  .control-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .control-row label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .control-row label span {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--green-mid);
+    background: var(--green-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .control-row input[type="range"] {
+    width: 100%;
+    accent-color: var(--green-mid);
+    cursor: pointer;
+  }
+  .control-row .hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .btn {
+    padding: 10px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.1s;
+    width: 100%;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-jump {
+    background: var(--green-mid);
+    color: white;
+  }
+  .btn-jump:disabled { background: var(--muted); cursor: not-allowed; }
+  .btn-reset {
+    background: var(--stone);
+    color: white;
+    font-size: 13px;
+    padding: 7px 0;
+  }
+  .btn-preset {
+    background: var(--off-white);
+    border: 2px solid var(--green-light);
+    color: var(--green-dark);
+    font-size: 12px;
+    padding: 7px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-preset:hover { background: var(--green-light); }
+
+  .preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  /* ── Stats ───────────────────────────────────────────────── */
+  .stats {
+    background: var(--off-white);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: var(--green-dark); }
+  .stat-value.negative { color: var(--red); }
+
+  /* ── Visualizer Canvas Area ──────────────────────────────── */
+  .viz-area {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--sky-top);
+  }
+
+  .canvas-row {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  .world-canvas-wrap {
+    flex: 0 0 300px;
+    position: relative;
+    overflow: hidden;
+    border-right: 2px solid rgba(0,0,0,0.1);
+  }
+
+  .world-canvas-wrap canvas { display: block; width: 100%; height: 100%; }
+
+  .graph-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 10px;
+    background: white;
+    overflow: hidden;
+  }
+
+  .graph-wrap {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+  .graph-wrap canvas { display: block; width: 100%; height: 100%; }
+
+  .graph-label {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  /* ── Formula Bar ─────────────────────────────────────────── */
+  .formula-bar {
+    background: var(--green-dark);
+    color: white;
+    padding: 8px 16px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .formula-bar .formula {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--green-light);
+  }
+  .formula-bar .formula strong { color: var(--gold); }
+  .formula-bar .note {
+    font-size: 11px;
+    color: #A5D6A7;
+    font-style: italic;
+  }
+
+  /* ── Comparison note ─────────────────────────────────────── */
+  .comparison {
+    background: #E3F2FD;
+    border-left: 4px solid #1565C0;
+    padding: 8px 12px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: #0D47A1;
+  }
+  .comparison strong { font-family: 'Courier New', monospace; }
+
+  /* ── Log ─────────────────────────────────────────────────── */
+  .log {
+    background: #111;
+    color: #4CAF50;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 8px 10px;
+    height: 70px;
+    overflow-y: auto;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .log .log-entry { line-height: 1.5; }
+  .log .log-dim { color: #555; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="badge">DAY 6 OF 15</div>
+  </div>
+  <div>
+    <h1>⛏️ Gravity &amp; Jump Physics Visualizer</h1>
+    <div class="subtitle">STEM through Games — Minecraft Education Edition</div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ── LEFT: Controls ────────────────────────────────────── -->
+  <div class="controls">
+
+    <div>
+      <div class="section-label">Physics Constants</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div class="control-row">
+          <label>JUMP_FORCE <span id="jfVal">10</span></label>
+          <input type="range" id="jumpForce" min="2" max="30" value="10" step="0.5">
+          <div class="hint">Upward velocity burst (positive = up in Minecraft)</div>
+        </div>
+
+        <div class="control-row">
+          <label>GRAVITY <span id="gravVal">-0.60</span></label>
+          <input type="range" id="gravity" min="-3" max="-0.1" value="-0.6" step="0.05">
+          <div class="hint">Added to velocityY each tick (negative = pulls down)</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="comparison">
+      <strong>Godot equivalent:</strong><br>
+      JUMP_VELOCITY = <strong>-500</strong> (negative, Y is down)<br>
+      gravity via <strong>get_gravity() * delta</strong> (positive value)
+    </div>
+
+    <button class="btn btn-jump" id="jumpBtn" onclick="doJump()">
+      ⬆ JUMP  (type /jump in Minecraft)
+    </button>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">posY (height)</div>
+        <div class="stat-value" id="statPosY">64.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">velocityY</div>
+        <div class="stat-value" id="statVelY">0.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">on ground?</div>
+        <div class="stat-value" id="statGround" style="color:var(--green-mid)">YES</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">tick #</div>
+        <div class="stat-value" id="statTick">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">peak height</div>
+        <div class="stat-value" id="statPeak">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">air ticks</div>
+        <div class="stat-value" id="statAirTicks">0</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">World Presets</div>
+      <div class="preset-grid">
+        <button class="btn-preset" onclick="applyPreset(10, -0.6)">🌲 Normal</button>
+        <button class="btn-preset" onclick="applyPreset(18, -0.25)">✨ Low Gravity</button>
+        <button class="btn-preset" onclick="applyPreset(10, -1.8)">🪨 High Gravity</button>
+        <button class="btn-preset" onclick="applyPreset(28, -0.15)">🌙 Moon World</button>
+        <button class="btn-preset" onclick="applyPreset(6, -2.5)">🔥 Nether Brutal</button>
+        <button class="btn-preset" onclick="applyPreset(14, -0.6)">💪 Power Jump</button>
+      </div>
+    </div>
+
+    <button class="btn btn-reset" onclick="resetSim()">↺ Reset</button>
+
+    <div class="log" id="log">
+      <div class="log-entry log-dim">// Physics log — jump to see output</div>
+    </div>
+
+  </div>
+
+  <!-- ── RIGHT: Visualization ──────────────────────────────── -->
+  <div class="viz-area">
+
+    <div class="canvas-row">
+
+      <!-- World view -->
+      <div class="world-canvas-wrap">
+        <canvas id="worldCanvas"></canvas>
+      </div>
+
+      <!-- Graphs -->
+      <div class="graph-area">
+        <div>
+          <div class="graph-label">📈 Y Position Over Time (the parabola!)</div>
+          <div class="graph-wrap" style="flex:0 0 200px; min-height:200px;">
+            <canvas id="posGraph"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="graph-label">📉 Y Velocity Over Time (constant change = acceleration)</div>
+          <div class="graph-wrap" style="flex:0 0 150px; min-height:150px;">
+            <canvas id="velGraph"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="formula-bar">
+      <div>
+        <div class="formula">y(t) = <strong>v₀</strong> × t + ½ × <strong>g</strong> × t²</div>
+      </div>
+      <div class="note">
+        v₀ = JUMP_FORCE &nbsp;|&nbsp; g = GRAVITY × ticks/sec &nbsp;|&nbsp; t = time elapsed
+      </div>
+      <div class="note" style="margin-left:auto;">
+        t² term = quadratic = <strong style="color:var(--gold)">parabola!</strong>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Simulation State ─────────────────────────────────────────
+
+let JUMP_FORCE   = 10
+let GRAVITY      = -0.6
+const GROUND     = 64
+const TICK_MS    = 50
+
+let velocityY    = 0
+let posY         = GROUND
+let onGround     = true
+let tick         = 0
+let airTicks     = 0
+let peakY        = GROUND
+let jumpInProgress = false
+
+// History for graphs (per-jump)
+let posHistory   = []
+let velHistory   = []
+const MAX_HIST   = 200
+
+// ── Canvas Setup ─────────────────────────────────────────────
+
+const worldCanvas = document.getElementById('worldCanvas')
+const wCtx        = worldCanvas.getContext('2d')
+const posCanvas   = document.getElementById('posGraph')
+const pCtx        = posCanvas.getContext('2d')
+const velCanvas   = document.getElementById('velGraph')
+const vCtx        = velCanvas.getContext('2d')
+
+function resizeCanvases() {
+  const ww = worldCanvas.parentElement
+  worldCanvas.width  = ww.clientWidth
+  worldCanvas.height = ww.clientHeight
+  posCanvas.width  = posCanvas.parentElement.clientWidth
+  posCanvas.height = posCanvas.parentElement.clientHeight
+  velCanvas.width  = velCanvas.parentElement.clientWidth
+  velCanvas.height = velCanvas.parentElement.clientHeight
+}
+window.addEventListener('resize', resizeCanvases)
+setTimeout(resizeCanvases, 50)
+
+// ── Controls ─────────────────────────────────────────────────
+
+document.getElementById('jumpForce').addEventListener('input', function() {
+  JUMP_FORCE = parseFloat(this.value)
+  document.getElementById('jfVal').textContent = JUMP_FORCE.toFixed(1)
+})
+document.getElementById('gravity').addEventListener('input', function() {
+  GRAVITY = parseFloat(this.value)
+  document.getElementById('gravVal').textContent = GRAVITY.toFixed(2)
+})
+
+function applyPreset(jf, g) {
+  JUMP_FORCE = jf
+  GRAVITY = g
+  document.getElementById('jumpForce').value = jf
+  document.getElementById('gravity').value = g
+  document.getElementById('jfVal').textContent = jf.toFixed(1)
+  document.getElementById('gravVal').textContent = g.toFixed(2)
+  resetSim()
+  addLog(`Preset applied: JUMP_FORCE=${jf}, GRAVITY=${g}`)
+}
+
+// ── Physics ───────────────────────────────────────────────────
+
+function doJump() {
+  if (!onGround) return
+  velocityY      = JUMP_FORCE
+  onGround       = false
+  jumpInProgress = true
+  peakY          = posY
+  posHistory     = [posY]
+  velHistory     = [velocityY]
+  airTicks       = 0
+  addLog(`/jump → velocityY = ${JUMP_FORCE}  (GRAVITY = ${GRAVITY})`)
+  document.getElementById('jumpBtn').disabled = true
+}
+
+function physicsTick() {
+  if (onGround) return
+
+  tick++
+  airTicks++
+
+  // Apply gravity (same logic as the MakeCode files)
+  velocityY += GRAVITY
+
+  // Update position
+  posY += velocityY
+
+  // Track peak
+  if (posY > peakY) peakY = posY
+
+  // Record history
+  if (posHistory.length < MAX_HIST) {
+    posHistory.push(posY)
+    velHistory.push(velocityY)
+  }
+
+  // Ground collision
+  if (posY <= GROUND) {
+    posY      = GROUND
+    velocityY = 0
+    onGround  = true
+    document.getElementById('jumpBtn').disabled = false
+    addLog(`Landed! Peak: ${(peakY - GROUND).toFixed(1)} blocks above ground. Air ticks: ${airTicks}`)
+  }
+
+  // Update stats
+  updateStats()
+}
+
+function updateStats() {
+  document.getElementById('statPosY').textContent   = posY.toFixed(2)
+  const velEl = document.getElementById('statVelY')
+  velEl.textContent = velocityY.toFixed(2)
+  velEl.className   = 'stat-value' + (velocityY < 0 ? ' negative' : '')
+  const gndEl = document.getElementById('statGround')
+  gndEl.textContent = onGround ? 'YES' : 'NO'
+  gndEl.style.color = onGround ? 'var(--green-mid)' : 'var(--red)'
+  document.getElementById('statTick').textContent   = tick
+  document.getElementById('statPeak').textContent   = jumpInProgress ? `+${(peakY - GROUND).toFixed(1)}` : '—'
+  document.getElementById('statAirTicks').textContent = airTicks
+}
+
+function resetSim() {
+  velocityY      = 0
+  posY           = GROUND
+  onGround       = true
+  tick           = 0
+  airTicks       = 0
+  peakY          = GROUND
+  jumpInProgress = false
+  posHistory     = []
+  velHistory     = []
+  document.getElementById('jumpBtn').disabled = false
+  updateStats()
+  document.getElementById('statPeak').textContent = '—'
+}
+
+// ── World Renderer ────────────────────────────────────────────
+
+function drawWorld() {
+  const W = worldCanvas.width
+  const H = worldCanvas.height
+  if (W === 0 || H === 0) return
+
+  wCtx.clearRect(0, 0, W, H)
+
+  // Sky gradient
+  const sky = wCtx.createLinearGradient(0, 0, 0, H * 0.65)
+  sky.addColorStop(0, '#5DA0D0')
+  sky.addColorStop(1, '#C9E8F5')
+  wCtx.fillStyle = sky
+  wCtx.fillRect(0, 0, W, H)
+
+  const BLOCK = 28
+  const worldH = 14   // blocks visible
+  // Map posY to screen: ground = bottom of screen
+  const groundScreenY = H - 60
+
+  function blockScreenY(blockY) {
+    return groundScreenY - (blockY - GROUND) * BLOCK
+  }
+
+  // Draw grid lines (faint)
+  wCtx.strokeStyle = 'rgba(255,255,255,0.15)'
+  wCtx.lineWidth = 1
+  for (let y = 0; y < worldH + 2; y++) {
+    const sy = groundScreenY - y * BLOCK
+    wCtx.beginPath()
+    wCtx.moveTo(0, sy)
+    wCtx.lineTo(W, sy)
+    wCtx.stroke()
+  }
+
+  // Ground blocks (Minecraft-style)
+  for (let bx = -1; bx <= Math.ceil(W / BLOCK) + 1; bx++) {
+    const sx = bx * BLOCK
+    // Grass layer
+    wCtx.fillStyle = '#4CAF50'
+    wCtx.fillRect(sx + 1, groundScreenY, BLOCK - 2, BLOCK * 0.35)
+    wCtx.fillStyle = '#388E3C'
+    wCtx.fillRect(sx + 1, groundScreenY + BLOCK * 0.1, BLOCK - 2, BLOCK * 0.25)
+    // Dirt layers
+    for (let dy = 1; dy <= 3; dy++) {
+      wCtx.fillStyle = dy === 1 ? '#795548' : dy === 2 ? '#6D4C41' : '#5D4037'
+      wCtx.fillRect(sx + 1, groundScreenY + dy * BLOCK * 0.33, BLOCK - 2, BLOCK * 0.33)
+    }
+    // Block border
+    wCtx.strokeStyle = 'rgba(0,0,0,0.2)'
+    wCtx.lineWidth = 0.5
+    wCtx.strokeRect(sx, groundScreenY, BLOCK, BLOCK)
+  }
+
+  // Ground level Y label
+  wCtx.fillStyle = 'rgba(255,255,255,0.8)'
+  wCtx.font = 'bold 11px Arial'
+  wCtx.textAlign = 'left'
+  wCtx.fillText('Y = ' + GROUND + ' (ground)', 6, groundScreenY - 4)
+
+  // Draw trajectory path
+  if (posHistory.length > 1) {
+    wCtx.strokeStyle = 'rgba(255, 200, 0, 0.7)'
+    wCtx.lineWidth = 2
+    wCtx.setLineDash([3, 3])
+    wCtx.beginPath()
+    posHistory.forEach((py, i) => {
+      const sx = W / 2
+      const sy = blockScreenY(py)
+      if (i === 0) wCtx.moveTo(sx, sy)
+      else wCtx.lineTo(sx, sy)
+    })
+    wCtx.stroke()
+    wCtx.setLineDash([])
+  }
+
+  // Agent (pixelated Minecraft character)
+  const agentX = W / 2
+  const agentY = blockScreenY(posY) - BLOCK
+
+  // Body
+  wCtx.fillStyle = '#1976D2'
+  wCtx.fillRect(agentX - 8, agentY + 8, 16, 14)
+  // Head
+  wCtx.fillStyle = '#FFCC80'
+  wCtx.fillRect(agentX - 7, agentY - 2, 14, 12)
+  // Eyes
+  wCtx.fillStyle = '#333'
+  wCtx.fillRect(agentX - 4, agentY + 1, 3, 3)
+  wCtx.fillRect(agentX + 1, agentY + 1, 3, 3)
+  // Legs
+  wCtx.fillStyle = '#37474F'
+  wCtx.fillRect(agentX - 6, agentY + 22, 5, 10)
+  wCtx.fillRect(agentX + 1, agentY + 22, 5, 10)
+  // Arms
+  wCtx.fillStyle = '#1565C0'
+  wCtx.fillRect(agentX - 14, agentY + 8, 6, 12)
+  wCtx.fillRect(agentX + 8, agentY + 8, 6, 12)
+
+  // Velocity arrow
+  if (!onGround && Math.abs(velocityY) > 0.1) {
+    const arrowLen = Math.min(Math.abs(velocityY) * 4, 60)
+    const arrowDir = velocityY > 0 ? -1 : 1  // screen Y is inverted
+    const arrowColor = velocityY > 0 ? '#4CAF50' : '#EF5350'
+    wCtx.strokeStyle = arrowColor
+    wCtx.fillStyle   = arrowColor
+    wCtx.lineWidth   = 3
+    wCtx.beginPath()
+    wCtx.moveTo(agentX, agentY + 16)
+    wCtx.lineTo(agentX, agentY + 16 + arrowDir * arrowLen)
+    wCtx.stroke()
+    // Arrowhead
+    wCtx.beginPath()
+    const tipY = agentY + 16 + arrowDir * arrowLen
+    wCtx.moveTo(agentX, tipY)
+    wCtx.lineTo(agentX - 6, tipY - arrowDir * 10)
+    wCtx.lineTo(agentX + 6, tipY - arrowDir * 10)
+    wCtx.closePath()
+    wCtx.fill()
+
+    // Velocity label
+    wCtx.fillStyle = arrowColor
+    wCtx.font = 'bold 12px Courier New'
+    wCtx.textAlign = 'right'
+    wCtx.fillText('v=' + velocityY.toFixed(1), agentX - 10, agentY + 16 + arrowDir * (arrowLen / 2))
+  }
+
+  // Peak marker
+  if (jumpInProgress && peakY > GROUND) {
+    const peakScreen = blockScreenY(peakY)
+    wCtx.strokeStyle = '#F9A825'
+    wCtx.lineWidth   = 1.5
+    wCtx.setLineDash([4, 4])
+    wCtx.beginPath()
+    wCtx.moveTo(0, peakScreen)
+    wCtx.lineTo(W, peakScreen)
+    wCtx.stroke()
+    wCtx.setLineDash([])
+    wCtx.fillStyle = '#F9A825'
+    wCtx.font = 'bold 11px Arial'
+    wCtx.textAlign = 'right'
+    wCtx.fillText(`peak +${(peakY - GROUND).toFixed(1)}`, W - 6, peakScreen - 4)
+  }
+
+  // Coordinate label
+  wCtx.fillStyle = 'rgba(0,0,0,0.5)'
+  wCtx.font = '11px Courier New'
+  wCtx.textAlign = 'left'
+  wCtx.fillText(`Y = ${posY.toFixed(1)}`, agentX + 18, agentY + 8)
+}
+
+// ── Graph Renderers ───────────────────────────────────────────
+
+function drawGraph(canvas, ctx, data, color, label, yMin, yMax, zeroLine) {
+  const W = canvas.width
+  const H = canvas.height
+  if (W === 0 || H === 0) return
+  ctx.clearRect(0, 0, W, H)
+
+  // Background
+  ctx.fillStyle = '#FAFAFA'
+  ctx.fillRect(0, 0, W, H)
+
+  // Grid
+  ctx.strokeStyle = '#E0E0E0'
+  ctx.lineWidth = 1
+  for (let i = 1; i < 5; i++) {
+    const y = H * i / 5
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke()
+  }
+
+  // Zero line (if in range)
+  if (zeroLine !== undefined) {
+    const zy = H - ((zeroLine - yMin) / (yMax - yMin)) * H
+    ctx.strokeStyle = '#BDBDBD'
+    ctx.lineWidth = 1.5
+    ctx.setLineDash([4, 3])
+    ctx.beginPath(); ctx.moveTo(0, zy); ctx.lineTo(W, zy); ctx.stroke()
+    ctx.setLineDash([])
+    ctx.fillStyle = '#9E9E9E'
+    ctx.font = '10px Arial'
+    ctx.textAlign = 'left'
+    ctx.fillText('0', 3, zy - 3)
+  }
+
+  if (data.length < 2) {
+    ctx.fillStyle = '#BDBDBD'
+    ctx.font = '13px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('Press JUMP to see the graph', W / 2, H / 2)
+    return
+  }
+
+  // Draw line
+  ctx.strokeStyle = color
+  ctx.lineWidth = 2.5
+  ctx.lineJoin = 'round'
+  ctx.beginPath()
+  data.forEach((v, i) => {
+    const x = (i / (MAX_HIST - 1)) * W
+    const y = H - ((v - yMin) / (yMax - yMin)) * H
+    if (i === 0) ctx.moveTo(x, y)
+    else ctx.lineTo(x, y)
+  })
+  ctx.stroke()
+
+  // Fill under
+  ctx.fillStyle = color + '22'
+  ctx.lineTo((data.length - 1) / (MAX_HIST - 1) * W, H)
+  ctx.lineTo(0, H)
+  ctx.closePath()
+  ctx.fill()
+
+  // Axis labels
+  ctx.fillStyle = '#546E7A'
+  ctx.font = '10px Arial'
+  ctx.textAlign = 'left'
+  ctx.fillText(yMax.toFixed(0), 3, 12)
+  ctx.fillText(yMin.toFixed(0), 3, H - 3)
+}
+
+// ── Log ───────────────────────────────────────────────────────
+
+function addLog(msg) {
+  const log = document.getElementById('log')
+  const line = document.createElement('div')
+  line.className = 'log-entry'
+  const t = (tick * TICK_MS / 1000).toFixed(2)
+  line.textContent = `[t=${t}s] ${msg}`
+  log.appendChild(line)
+  log.scrollTop = log.scrollHeight
+}
+
+// ── Render Loop ───────────────────────────────────────────────
+
+setInterval(physicsTick, TICK_MS)
+
+function renderLoop() {
+  drawWorld()
+  const jumpForce = parseFloat(document.getElementById('jumpForce').value)
+  drawGraph(posCanvas, pCtx, posHistory, '#2E7D32', 'Position',
+    GROUND - 2, GROUND + jumpForce * 1.2 + 5, GROUND)
+  drawGraph(velCanvas, vCtx, velHistory, '#1565C0', 'Velocity',
+    GRAVITY * 25, jumpForce + 3, 0)
+  requestAnimationFrame(renderLoop)
+}
+renderLoop()
+</script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AABB Visualizer — Day 7 Collision Detection</title>
+<style>
+  :root {
+    --grass:   #4A8C43;
+    --dark:    #1A3A18;
+    --gold:    #F5B942;
+    --dirt:    #7A5230;
+    --stone:   #8A8A8A;
+    --red:     #C0392B;
+    --cream:   #F5F0E8;
+    --ltgreen: #D4EDCD;
+    --code-bg: #1E2A1E;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: var(--cream);
+    color: #222;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--dark);
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 22px; color: var(--gold); }
+  header p  { font-size: 13px; color: #88CC88; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 60px);
+  }
+
+  /* ── CONTROLS PANEL ────────────────────────────── */
+  .controls {
+    background: white;
+    border-right: 2px solid #ddd;
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+
+  .zone-card {
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .zone-a { background: var(--ltgreen); border: 2px solid var(--grass); }
+  .zone-b { background: #FFF8EC;       border: 2px solid var(--dirt); }
+
+  .zone-card h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .zone-a h3 { color: var(--dark); }
+  .zone-b h3 { color: var(--dirt); }
+
+  .dot { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  .dot-a { background: rgba(74,140,67,0.6); border: 2px solid var(--grass); }
+  .dot-b { background: rgba(122,82,48,0.4); border: 2px solid var(--dirt); }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .field-row label {
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .field-row input {
+    width: 100%;
+    padding: 5px 7px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    background: white;
+  }
+  .field-row input:focus {
+    outline: none;
+    border-color: var(--grass);
+  }
+
+  .field-hint {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  /* ── RESULT BOX ─────────────────────────────────── */
+  .result {
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .result.collision { background: var(--grass); color: white; }
+  .result.no-collision { background: var(--red); color: white; }
+  .result h2 { font-size: 20px; margin-bottom: 4px; }
+  .result p  { font-size: 13px; opacity: 0.9; }
+
+  /* ── AXIS CHECKS ────────────────────────────────── */
+  .axis-checks { margin-bottom: 16px; }
+  .axis-checks h4 { font-size: 13px; color: #555; margin-bottom: 8px; font-weight: bold; }
+
+  .axis-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+  }
+  .axis-row.pass { background: #E8F5E5; color: #1A4A15; }
+  .axis-row.fail { background: #FDECEA; color: #922B21; }
+  .axis-icon { font-size: 15px; flex-shrink: 0; }
+  .axis-label { font-weight: bold; min-width: 55px; font-family: Arial, sans-serif; font-size: 12px; }
+
+  /* ── COMMAND OUTPUT ─────────────────────────────── */
+  .command-box {
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+  .command-box h4 { font-size: 12px; color: #88CC88; margin-bottom: 8px; font-family: Arial; }
+  .command-box code {
+    display: block;
+    color: var(--gold);
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.6;
+    word-break: break-all;
+  }
+
+  /* ── CANVAS AREA ────────────────────────────────── */
+  .canvas-wrap {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .view-tabs {
+    display: flex;
+    gap: 8px;
+  }
+  .tab {
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 2px solid var(--grass);
+    background: white;
+    color: var(--dark);
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .tab.active { background: var(--grass); color: white; }
+
+  canvas {
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    background: white;
+    display: block;
+    max-width: 100%;
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 20px; height: 14px; border-radius: 3px; }
+
+  .tip {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.6;
+  }
+  .tip strong { color: var(--dark); }
+
+  @media (max-width: 700px) {
+    .layout { grid-template-columns: 1fr; }
+    .controls { border-right: none; border-bottom: 2px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AABB Zone Visualizer</h1>
+  <p>STEM Through Games &nbsp;·&nbsp; Day 7: Collision Detection &nbsp;·&nbsp; Minecraft Education Edition</p>
+</header>
+
+<div class="layout">
+
+  <!-- ── LEFT PANEL: Controls ───────────────────────────── -->
+  <div class="controls">
+
+    <div class="zone-card zone-a">
+      <h3><span class="dot dot-a"></span> Zone A (green)</h3>
+      <div class="field-row">
+        <div><label>x (corner)</label><input type="number" id="ax" value="2"></div>
+        <div><label>y</label><input type="number" id="ay" value="64"></div>
+        <div><label>z (corner)</label><input type="number" id="az" value="3"></div>
+      </div>
+      <div class="field-row">
+        <div><label>dx (width−1)</label><input type="number" id="adx" value="4" min="0"></div>
+        <div><label>dy (height−1)</label><input type="number" id="ady" value="2" min="0"></div>
+        <div><label>dz (depth−1)</label><input type="number" id="adz" value="3" min="0"></div>
+      </div>
+      <p class="field-hint">dx=4 → zone spans 5 blocks east–west (x to x+4)</p>
+    </div>
+
+    <div class="zone-card zone-b">
+      <h3><span class="dot dot-b"></span> Zone B (orange)</h3>
+      <div class="field-row">
+        <div><label>x (corner)</label><input type="number" id="bx" value="5"></div>
+        <div><label>y</label><input type="number" id="by" value="64"></div>
+        <div><label>z (corner)</label><input type="number" id="bz" value="4"></div>
+      </div>
+      <div class="field-row">
+        <div><label>dx (width−1)</label><input type="number" id="bdx" value="3" min="0"></div>
+        <div><label>dy (height−1)</label><input type="number" id="bdy" value="2" min="0"></div>
+        <div><label>dz (depth−1)</label><input type="number" id="bdz" value="2" min="0"></div>
+      </div>
+      <p class="field-hint">Drag the sliders or type values to see live updates.</p>
+    </div>
+
+    <!-- Result -->
+    <div class="result" id="result">
+      <h2 id="result-title">—</h2>
+      <p id="result-detail"></p>
+    </div>
+
+    <!-- Axis checks -->
+    <div class="axis-checks">
+      <h4>Step-by-step AABB check:</h4>
+      <div class="axis-row" id="check-x"><span class="axis-icon"></span><span class="axis-label">X axis</span><span id="check-x-text"></span></div>
+      <div class="axis-row" id="check-y"><span class="axis-icon"></span><span class="axis-label">Y axis</span><span id="check-y-text"></span></div>
+      <div class="axis-row" id="check-z"><span class="axis-icon"></span><span class="axis-label">Z axis</span><span id="check-z-text"></span></div>
+    </div>
+
+    <!-- Minecraft commands -->
+    <div class="command-box">
+      <h4>Minecraft /testfor commands:</h4>
+      <code id="cmd-a"></code>
+      <code id="cmd-b"></code>
+    </div>
+
+  </div><!-- /controls -->
+
+  <!-- ── RIGHT PANEL: Canvas ────────────────────────────── -->
+  <div class="canvas-wrap">
+
+    <div class="view-tabs">
+      <button class="tab active" onclick="setView('xz')">Top-down (X / Z)</button>
+      <button class="tab" onclick="setView('xy')">Side view (X / Y)</button>
+    </div>
+
+    <canvas id="viz" width="600" height="460"></canvas>
+
+    <div class="legend">
+      <span style="font-weight:bold; color:#555;">Legend:</span>
+      <div class="legend-item"><div class="swatch" style="background:rgba(74,140,67,0.35);border:2px solid #4A8C43;"></div> Zone A</div>
+      <div class="legend-item"><div class="swatch" style="background:rgba(122,82,48,0.25);border:2px solid #7A5230;"></div> Zone B</div>
+      <div class="legend-item"><div class="swatch" style="background:rgba(245,185,66,0.55);border:2px solid #F5B942;"></div> Overlap region</div>
+    </div>
+
+    <div class="tip">
+      <strong>Try this:</strong> Set Zone A to x=2, dx=4 and Zone B to x=10, dx=3 — watch the overlap disappear and see which axis check fails. Then slowly bring Zone B's x closer. At what value does collision first appear?<br><br>
+      <strong>Remember:</strong> dx=3 means the zone spans from x to x+3 — that's <em>4</em> blocks. This is the same off-by-one that trips up real Minecraft Command Block builders!
+    </div>
+
+  </div><!-- /canvas-wrap -->
+
+</div><!-- /layout -->
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// Data & AABB logic
+// ─────────────────────────────────────────────────────────────
+
+var currentView = 'xz';
+
+function getZone(prefix) {
+  return {
+    x:  +document.getElementById(prefix + 'x').value  || 0,
+    y:  +document.getElementById(prefix + 'y').value  || 0,
+    z:  +document.getElementById(prefix + 'z').value  || 0,
+    dx: +document.getElementById(prefix + 'dx').value || 0,
+    dy: +document.getElementById(prefix + 'dy').value || 0,
+    dz: +document.getElementById(prefix + 'dz').value || 0,
+  };
+}
+
+function axisOverlap(amin, amax, bmin, bmax) {
+  return amin < bmax && bmin < amax;
+}
+
+function checkAABB(a, b) {
+  var xPass = axisOverlap(a.x, a.x + a.dx, b.x, b.x + b.dx);
+  var yPass = axisOverlap(a.y, a.y + a.dy, b.y, b.y + b.dy);
+  var zPass = axisOverlap(a.z, a.z + a.dz, b.z, b.z + b.dz);
+  return { xPass, yPass, zPass, collision: xPass && yPass && zPass };
+}
+
+// ─────────────────────────────────────────────────────────────
+// UI update
+// ─────────────────────────────────────────────────────────────
+
+function update() {
+  var a = getZone('a');
+  var b = getZone('b');
+  var r = checkAABB(a, b);
+
+  // Result banner
+  var resEl = document.getElementById('result');
+  resEl.className = 'result ' + (r.collision ? 'collision' : 'no-collision');
+  document.getElementById('result-title').textContent = r.collision ? '⚡ COLLISION DETECTED' : '✗ No Collision';
+  document.getElementById('result-detail').textContent = r.collision
+    ? 'All three axes overlap — the zones share at least one block.'
+    : 'At least one axis does not overlap — the zones are separate.';
+
+  // Axis checks
+  setAxisRow('check-x', r.xPass, 'X (East-West)', a.x, a.x+a.dx, b.x, b.x+b.dx);
+  setAxisRow('check-y', r.yPass, 'Y (Up-Down)',   a.y, a.y+a.dy, b.y, b.y+b.dy);
+  setAxisRow('check-z', r.zPass, 'Z (N-S)',       a.z, a.z+a.dz, b.z, b.z+b.dz);
+
+  // Commands
+  document.getElementById('cmd-a').textContent =
+    '/testfor @a[x='+a.x+',y='+a.y+',z='+a.z+',dx='+a.dx+',dy='+a.dy+',dz='+a.dz+']';
+  document.getElementById('cmd-b').textContent =
+    '/testfor @a[x='+b.x+',y='+b.y+',z='+b.z+',dx='+b.dx+',dy='+b.dy+',dz='+b.dz+']';
+
+  // Canvas
+  drawCanvas(a, b, r);
+}
+
+function setAxisRow(id, pass, label, amin, amax, bmin, bmax) {
+  var row  = document.getElementById(id);
+  var text = document.getElementById(id + '-text');
+  row.className = 'axis-row ' + (pass ? 'pass' : 'fail');
+  row.querySelector('.axis-icon').textContent = pass ? '✓' : '✗';
+  row.querySelector('.axis-label').textContent = label;
+  text.textContent = amin+'<'+bmax+'? '+(amin<bmax?'yes':'no')
+    +'  AND  '+bmin+'<'+amax+'? '+(bmin<amax?'yes':'no')
+    +'  →  '+(pass ? 'overlap' : 'MISS');
+}
+
+// ─────────────────────────────────────────────────────────────
+// Canvas drawing
+// ─────────────────────────────────────────────────────────────
+
+function setView(v) {
+  currentView = v;
+  document.querySelectorAll('.tab').forEach(function(t, i) {
+    t.className = 'tab' + (i === (v === 'xz' ? 0 : 1) ? ' active' : '');
+  });
+  update();
+}
+
+function drawCanvas(a, b, r) {
+  var canvas = document.getElementById('viz');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid
+  ctx.fillStyle = '#F8F6F0';
+  ctx.fillRect(0, 0, W, H);
+
+  // Determine which axes to show
+  var horiz, vert;
+  if (currentView === 'xz') {
+    horiz = { label: 'X (East →)', getMin: function(z){return z.x;}, getMax: function(z){return z.x+z.dx;} };
+    vert  = { label: 'Z (South ↓)', getMin: function(z){return z.z;}, getMax: function(z){return z.z+z.dz;} };
+  } else {
+    horiz = { label: 'X (East →)', getMin: function(z){return z.x;}, getMax: function(z){return z.x+z.dx;} };
+    vert  = { label: 'Y (Up ↑)', getMin: function(z){return z.y;}, getMax: function(z){return z.y+z.dy;} };
+  }
+
+  var PAD = 60;
+  var cW = W - PAD * 2;
+  var cH = H - PAD * 2;
+
+  // Compute world bounds
+  var allH = [horiz.getMin(a), horiz.getMax(a), horiz.getMin(b), horiz.getMax(b)];
+  var allV = [vert.getMin(a),  vert.getMax(a),  vert.getMin(b),  vert.getMax(b)];
+  var hMin = Math.min.apply(null, allH) - 2;
+  var hMax = Math.max.apply(null, allH) + 2;
+  var vMin = Math.min.apply(null, allV) - 2;
+  var vMax = Math.max.apply(null, allV) + 2;
+
+  function toScreen(hVal, vVal) {
+    return {
+      x: PAD + ((hVal - hMin) / (hMax - hMin)) * cW,
+      y: PAD + ((vVal - vMin) / (vMax - vMin)) * cH,
+    };
+  }
+
+  // Draw grid lines
+  ctx.strokeStyle = '#E0DDD8';
+  ctx.lineWidth = 1;
+  for (var h = Math.ceil(hMin); h <= hMax; h++) {
+    var sx = PAD + ((h - hMin) / (hMax - hMin)) * cW;
+    ctx.beginPath(); ctx.moveTo(sx, PAD); ctx.lineTo(sx, PAD + cH); ctx.stroke();
+  }
+  for (var v = Math.ceil(vMin); v <= vMax; v++) {
+    var sy = PAD + ((v - vMin) / (vMax - vMin)) * cH;
+    ctx.beginPath(); ctx.moveTo(PAD, sy); ctx.lineTo(PAD + cW, sy); ctx.stroke();
+  }
+
+  // Draw grid labels
+  ctx.fillStyle = '#AAA';
+  ctx.font = '11px Arial';
+  ctx.textAlign = 'center';
+  for (var h = Math.ceil(hMin); h <= hMax; h += 2) {
+    var sx = PAD + ((h - hMin) / (hMax - hMin)) * cW;
+    ctx.fillText(h, sx, PAD - 8);
+  }
+  ctx.textAlign = 'right';
+  for (var v = Math.ceil(vMin); v <= vMax; v += 2) {
+    var sy = PAD + ((v - vMin) / (vMax - vMin)) * cH;
+    ctx.fillText(v, PAD - 6, sy + 4);
+  }
+
+  // Axis labels
+  ctx.fillStyle = '#555';
+  ctx.font = 'bold 12px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(horiz.label, W / 2, 14);
+  ctx.save();
+  ctx.translate(14, H / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText(vert.label, 0, 0);
+  ctx.restore();
+
+  function drawZone(zone, fillColor, strokeColor, label) {
+    var hMin_ = horiz.getMin(zone), hMax_ = horiz.getMax(zone);
+    var vMin_ = vert.getMin(zone),  vMax_ = vert.getMax(zone);
+    var tl = toScreen(hMin_, vMin_);
+    var br = toScreen(hMax_, vMax_);
+    var zW = br.x - tl.x, zH = br.y - tl.y;
+
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(tl.x, tl.y, zW, zH);
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(tl.x, tl.y, zW, zH);
+
+    // Label
+    ctx.fillStyle = strokeColor;
+    ctx.font = 'bold 13px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, tl.x + 5, tl.y + 16);
+
+    // Corner coords
+    ctx.font = '10px Courier New';
+    ctx.fillStyle = strokeColor;
+    ctx.textAlign = 'left';
+    ctx.fillText('('+hMin_+','+vMin_+')', tl.x + 3, tl.y - 4);
+  }
+
+  drawZone(a, 'rgba(74,140,67,0.25)', '#2D6A27', 'Zone A');
+  drawZone(b, 'rgba(122,82,48,0.20)', '#7A5230', 'Zone B');
+
+  // Draw overlap region
+  if (r.collision) {
+    var ohMin = Math.max(horiz.getMin(a), horiz.getMin(b));
+    var ohMax = Math.min(horiz.getMax(a), horiz.getMax(b));
+    var ovMin = Math.max(vert.getMin(a), vert.getMin(b));
+    var ovMax = Math.min(vert.getMax(a), vert.getMax(b));
+    if (ohMax > ohMin && ovMax > ovMin) {
+      var tl = toScreen(ohMin, ovMin);
+      var br = toScreen(ohMax, ovMax);
+      ctx.fillStyle = 'rgba(245,185,66,0.55)';
+      ctx.fillRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+      ctx.strokeStyle = '#C8960A';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 3]);
+      ctx.strokeRect(tl.x, tl.y, br.x - tl.x, br.y - tl.y);
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#8A6200';
+      ctx.font = 'bold 11px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('OVERLAP', (tl.x + br.x) / 2, (tl.y + br.y) / 2 + 4);
+    }
+  }
+
+  // View-specific note
+  if (currentView === 'xz') {
+    ctx.fillStyle = '#888';
+    ctx.font = 'italic 11px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText('Top-down view — Y axis not shown (check axis panel)', W - PAD, H - 10);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Wire up inputs
+// ─────────────────────────────────────────────────────────────
+
+document.querySelectorAll('input').forEach(function(el) {
+  el.addEventListener('input', update);
+});
+
+update();
+</script>
+</body>
+</html>

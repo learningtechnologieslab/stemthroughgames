@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://bug02"]
+
+[ext_resource type="Script" path="res://BuggyScenes/Bug02_MovementBroken/Bug02_MovementBroken.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(40, 40)
+
+[node name="Bug02_MovementBroken" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" type="Node2D" parent="."]
+position = Vector2(320, 240)
+
+[node name="Sprite" type="ColorRect" parent="Player"]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(1, 0.4, 0.1, 1)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 400.0
+offset_bottom = 40.0
+text = "Bug 02: Movement Not Working"
+
+[node name="InstructionLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 620.0
+offset_bottom = 130.0
+text = "Press Arrow Keys or WASD to move the orange square.
+It won't move — and there will be an error in the Output panel.
+TASK: Find out why move_and_slide() is failing and fix it."
+autowrap_mode = 3
+
+[node name="NodeTypeLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 440.0
+offset_right = 620.0
+offset_bottom = 470.0
+text = "HINT: Look at the node type of 'Player' in the Scene panel."
+modulate = Color(1, 0.8, 0.2, 1)

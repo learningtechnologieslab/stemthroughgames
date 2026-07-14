@@ -1,0 +1,196 @@
+===============================================================
+  EXAMPLE 04 — Extension: Multi-NPC Quest Chain
+  Day 13: Dialogue Systems & Game Narrative
+  ⭐ For students who finish the main activity early
+===============================================================
+
+WHAT YOU WILL BUILD
+-------------------
+A three-NPC quest chain where information from one NPC
+(tracked via scoreboards) unlocks new dialogue at the next.
+
+  NPC 1: Elder Mira     — introduces the quest
+  NPC 2: Guard Rowan    — gates access by trust score
+  NPC 3: Wizard Selene  — rewards players who completed
+                          both previous conversations
+
+New scoreboards introduced:
+  trust         (from Example 03 — 0 or 1)
+  questStarted  (from Example 03 — 0 or 1)
+  gateUnlocked  (new — 0 or 1)
+  rewardGiven   (new — prevents giving reward twice)
+
+---------------------------------------------------------------
+STEP 1 — SETUP COMMANDS
+---------------------------------------------------------------
+
+Run all of these in chat:
+
+    /scoreboard objectives add trust dummy
+    /scoreboard objectives add questStarted dummy
+    /scoreboard objectives add gateUnlocked dummy
+    /scoreboard objectives add rewardGiven dummy
+    /scoreboard objectives setdisplay sidebar trust
+    /gamemode creative
+
+---------------------------------------------------------------
+STEP 2 — NPC #3: WIZARD SELENE (new character)
+Place this NPC in a tower or special building.
+---------------------------------------------------------------
+
+NPC Name:
+    Wizard Selene
+
+NPC Dialogue Text (shown to ALL players initially):
+    I sense great potential in you, traveler.
+    But I only share my wisdom with those who have
+    proven their loyalty to this village.
+    Speak with Elder Mira and earn the trust of our people.
+
+  Button (for locked state):
+    Label:           I understand.
+    On-Click Command: /say You must first help the village.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SELENE'S UNLOCK CONDITION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Add a Repeat Command Block near Selene that checks BOTH
+conditions (trust = 1 AND questStarted = 1) before unlocking:
+
+  Repeat Block — UNLOCK check (always running):
+    /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run title @s actionbar {"text":"Wizard Selene: You have proven yourself! I will teach you the Fireball spell.","color":"gold","bold":true}
+
+  Repeat Block — give the reward (run once):
+    /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run give @s fire_charge 3
+
+  Repeat Block — mark reward as given (prevents repeating):
+    /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run scoreboard players set @s rewardGiven 1
+
+Notice: all three blocks check the SAME conditions, so they
+all fire at the same moment — only when the player earns it,
+and only once (because rewardGiven becomes 1 after the first time).
+
+---------------------------------------------------------------
+STEP 3 — EXTEND THE GUARD ROWAN UNLOCK
+---------------------------------------------------------------
+
+Add this to Guard Rowan's area to set gateUnlocked when the
+player passes through:
+
+  Repeat Block near the gate itself:
+    /execute as @a[distance=..3] if score @s trust matches 1 run scoreboard players set @s gateUnlocked 1
+
+  Selene can now also check gateUnlocked for an extra dialogue:
+    /execute as @a[distance=..5] if score @s gateUnlocked matches 1 run title @s actionbar {"text":"Selene: I see you have passed through the gate. Well done.","color":"aqua"}
+
+---------------------------------------------------------------
+FULL COMMAND REFERENCE FOR EXAMPLE 04
+---------------------------------------------------------------
+
+SETUP:
+  /scoreboard objectives add trust dummy
+  /scoreboard objectives add questStarted dummy
+  /scoreboard objectives add gateUnlocked dummy
+  /scoreboard objectives add rewardGiven dummy
+
+ELDER MIRA — Button 1 (Help):
+  /scoreboard players set @p trust 1
+
+ELDER MIRA — Button 2 (Refuse):
+  /scoreboard players set @p trust 0
+
+QUEST STARTED FLAG (Repeat Block near Mira, always running):
+  /execute as @a[distance=..5] if score @s questStarted matches 0 run scoreboard players set @s questStarted 0
+  (Mira's button sets this — add to Button 1 AND Button 2 commands:)
+  /scoreboard players set @p questStarted 1
+
+GUARD ROWAN — Gate Open (trust = 1):
+  /execute as @a[distance=..4] if score @s trust matches 1 run title @s actionbar {"text":"Guard Rowan: The gate is open for you, hero!","color":"aqua"}
+
+GUARD ROWAN — Gate Locked (trust = 0):
+  /execute as @a[distance=..4] if score @s trust matches 0 run title @s actionbar {"text":"Guard Rowan: I cannot let you through.","color":"yellow"}
+
+GATE — Set gateUnlocked flag:
+  /execute as @a[distance=..3] if score @s trust matches 1 run scoreboard players set @s gateUnlocked 1
+
+WIZARD SELENE — Show reward message:
+  /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run title @s actionbar {"text":"Wizard Selene: You have proven yourself! Here is your reward.","color":"gold","bold":true}
+
+WIZARD SELENE — Give reward (fire charges):
+  /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run give @s fire_charge 3
+
+WIZARD SELENE — Prevent double reward:
+  /execute as @a[distance=..5] if score @s trust matches 1 if score @s questStarted matches 1 if score @s rewardGiven matches 0 run scoreboard players set @s rewardGiven 1
+
+RESET ALL (for testing):
+  /scoreboard players set @p trust 0
+  /scoreboard players set @p questStarted 0
+  /scoreboard players set @p gateUnlocked 0
+  /scoreboard players set @p rewardGiven 0
+
+---------------------------------------------------------------
+EXTENDED DIALOGUE TREE DIAGRAM
+---------------------------------------------------------------
+
+    ┌──────────────┐
+    │  ELDER MIRA  │  ← questStarted = 1 set here
+    └──────┬───────┘
+           │
+    ┌──────┴──────┐
+    │             │
+ [Help]        [Refuse]
+ trust=1        trust=0
+    │             │
+    ▼             ▼
+ ┌──────────┐  ┌──────────┐
+ │  Rowan   │  │  Rowan   │
+ │ OPENS    │  │ BLOCKS   │
+ │  gate    │  │  gate    │
+ └────┬─────┘  └──────────┘
+      │ gateUnlocked=1
+      ▼
+ ┌────────────────────────────────────┐
+ │  WIZARD SELENE                     │
+ │  trust=1 AND questStarted=1?       │
+ │    YES → reward + rewardGiven=1    │
+ │    NO  → "Earn Mira's trust first" │
+ └────────────────────────────────────┘
+
+---------------------------------------------------------------
+SCOREBOARD STATE — FULL TRACKING TABLE
+---------------------------------------------------------------
+
+  Scenario          trust  questStarted  gateUnlocked  rewardGiven
+  ─────────────     ─────  ────────────  ────────────  ───────────
+  Fresh start         0         0             0             0
+  Talked to Mira      ?         1             0             0
+  Chose "Help"        1         1             0             0
+  Passed the gate     1         1             1             0
+  Got Selene reward   1         1             1             1
+  Chose "Refuse"      0         1             0             0
+
+  This table is the same concept as tracking array state
+  in code — multiple variables together describe the full
+  state of the player's story progress.
+
+---------------------------------------------------------------
+CHALLENGE EXTENSION IDEAS
+---------------------------------------------------------------
+  🌟 Add a fourth NPC who only appears (via /summon) after
+     gateUnlocked = 1, giving the quest chain a surprise ending
+
+  🌟 Use /execute if score @s trust matches 2.. to create
+     a "high trust" tier for players who did bonus tasks
+
+  🌟 Add a TIMER using /scoreboard players add @a time 1
+     in a Repeat block and see how it changes dialogue
+     ("You're back! It took you <N> ticks to return.")
+
+  🌟 Try /tellraw instead of /title for richer formatted
+     dialogue with colours, bold, and click events
+
+===============================================================
+  You have completed all four examples!
+  See the README for what to submit and reflection prompts.
+===============================================================

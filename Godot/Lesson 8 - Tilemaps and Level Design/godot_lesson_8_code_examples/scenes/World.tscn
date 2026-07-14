@@ -1,0 +1,218 @@
+[gd_scene load_steps=8 format=3 uid="uid://day8_world"]
+
+[ext_resource type="Script" path="res://scripts/World.gd" id="1_world"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/Coin.gd" id="3_coin"]
+[ext_resource type="Script" path="res://scripts/GoalZone.gd" id="4_goal"]
+[ext_resource type="Script" path="res://scripts/HazardZone.gd" id="5_hazard"]
+
+; ─────────────────────────────────────────────────────────────────────────
+; NOTE TO STUDENTS:
+; This scene is your blank canvas! The TileMap node is ready for you.
+; Follow the 4 steps from today's lesson:
+;   Step 1: Inspect this scene tree
+;   Step 2: Select TileMap and paint your level
+;   Step 3: Check collision layers are assigned in TileSet
+;   Step 4: Move the Player, Coin, and GoalZone to your chosen positions
+; ─────────────────────────────────────────────────────────────────────────
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(28, 44)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
+radius = 12.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
+size = Vector2(64, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hazard"]
+size = Vector2(64, 32)
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="TileMap" type="TileMap" parent="."]
+; ─────────────────────────────────────────────────────────────────────
+; STUDENT TASK: Paint your level here!
+; tile_size = 64x64  (so pixel_x = col * 64, pixel_y = row * 64)
+; Open the TileMap editor panel at the bottom of the Godot window.
+; Select a tile from the TileSet palette and paint away!
+; ─────────────────────────────────────────────────────────────────────
+tile_set = null
+cell_quadrant_size = 64
+collision_animatable = false
+collision_visibility_mode = 0
+navigation_visibility_mode = 0
+
+[node name="Camera2D" type="Camera2D" parent="."]
+; Camera follows the Player automatically via World.gd
+position = Vector2(640, 360)
+zoom = Vector2(1.2, 1.2)
+limit_left = 0
+limit_top = 0
+limit_right = 4096
+limit_bottom = 1024
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_horizontal_offset = 0.0
+drag_vertical_offset = 0.2
+
+[node name="Player" type="CharacterBody2D" parent="."]
+; ─────────────────────────────────────────────────────────────────────
+; STUDENT TASK (Step 4): Move this node to your starting tile.
+; Example: if start = col 1, row 6 → position = Vector2(64, 384)
+; Formula: position.x = col * 64,  position.y = row * 64
+; ─────────────────────────────────────────────────────────────────────
+position = Vector2(96, 320)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("2_player")
+
+[node name="PlayerSprite" type="ColorRect" parent="Player"]
+; Placeholder sprite — a blue rectangle representing the player.
+; Replace with an actual Sprite2D + texture when you have art assets!
+offset_left = -14.0
+offset_top = -22.0
+offset_right = 14.0
+offset_bottom = 22.0
+color = Color(0.18, 0.59, 1.0, 1.0)
+
+[node name="PlayerEyes" type="ColorRect" parent="Player"]
+; Two white "eyes" so we can tell which way the player faces
+offset_left = -8.0
+offset_top = -14.0
+offset_right = 2.0
+offset_bottom = -4.0
+color = Color(1, 1, 1, 1)
+
+[node name="PlayerEyes2" type="ColorRect" parent="Player"]
+offset_left = 4.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = -4.0
+color = Color(1, 1, 1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Coin" type="Area2D" parent="."]
+; ─────────────────────────────────────────────────────────────────────
+; STUDENT TASK (Step 4): Move this to your collectible tile.
+; Example: col 5, row 4 → position = Vector2(320, 256)
+; ─────────────────────────────────────────────────────────────────────
+position = Vector2(320, 256)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("3_coin")
+
+[node name="CoinSprite" type="ColorRect" parent="Coin"]
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 12.0
+offset_bottom = 12.0
+color = Color(1.0, 0.76, 0.03, 1.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Coin"]
+shape = SubResource("CircleShape2D_coin")
+
+[node name="GoalZone" type="Area2D" parent="."]
+; ─────────────────────────────────────────────────────────────────────
+; STUDENT TASK (Step 4): Move this to your goal tile.
+; Example: col 14, row 3 → position = Vector2(896, 192)
+; ─────────────────────────────────────────────────────────────────────
+position = Vector2(896, 192)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("4_goal")
+
+[node name="GoalSprite" type="ColorRect" parent="GoalZone"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = 48.0
+color = Color(0.18, 0.8, 0.44, 0.7)
+
+[node name="GoalLabel" type="Label" parent="GoalZone"]
+offset_left = -32.0
+offset_top = -60.0
+offset_right = 32.0
+offset_bottom = -48.0
+text = "GOAL"
+horizontal_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalZone"]
+shape = SubResource("RectangleShape2D_goal")
+
+[node name="HazardZone" type="Area2D" parent="."]
+; ─────────────────────────────────────────────────────────────────────
+; STUDENT TASK: Move this to your hazard tile.
+; When the player touches this, they respawn at the start.
+; ─────────────────────────────────────────────────────────────────────
+position = Vector2(448, 448)
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("5_hazard")
+
+[node name="HazardSprite" type="ColorRect" parent="HazardZone"]
+offset_left = -32.0
+offset_top = -16.0
+offset_right = 32.0
+offset_bottom = 16.0
+color = Color(0.91, 0.3, 0.24, 0.8)
+
+[node name="HazardLabel" type="Label" parent="HazardZone"]
+offset_left = -32.0
+offset_top = -28.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "HAZARD"
+horizontal_alignment = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HazardZone"]
+shape = SubResource("RectangleShape2D_hazard")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="CoinsLabel" type="Label" parent="HUD"]
+anchors_preset = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 220.0
+offset_bottom = 44.0
+text = "Coins: 0"
+theme_override_font_sizes/font_size = 22
+
+[node name="MessageLabel" type="Label" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -36.0
+offset_right = 200.0
+offset_bottom = 36.0
+text = ""
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+visible = false
+
+[node name="DebugLabel" type="Label" parent="HUD"]
+; Shows live grid coordinates and pixel position — useful for the Math Connection!
+anchors_preset = 3
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 16.0
+offset_top = 46.0
+offset_right = 420.0
+offset_bottom = 78.0
+text = "Grid: (col=0, row=0)  Pixel: (x=0, y=0)"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7, 0.9, 1.0, 1.0)

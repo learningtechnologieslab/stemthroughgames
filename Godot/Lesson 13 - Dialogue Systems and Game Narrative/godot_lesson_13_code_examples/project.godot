@@ -1,0 +1,31 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; but the file format allows making such edits.
+;
+; Format:
+;   [section] ; section goes in []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Day13 - Dialogue Systems & Game Narrative"
+config/description="STEM Through Games - Day 13
+Dialogue systems, branching narrative, and array indexing in GDScript.
+Part of the STEM Through Games curriculum for middle school students."
+run/main_scene="res://scenes/MainMenu.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://assets/images/icon.svg"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

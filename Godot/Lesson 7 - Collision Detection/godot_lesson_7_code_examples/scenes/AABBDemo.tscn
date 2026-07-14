@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://aabb_demo_day7"]
+
+[ext_resource type="Script" path="res://scripts/AABBDemo.gd" id="1_demo"]
+
+; ─────────────────────────────────────────────────────────────
+; AABB Demo Scene
+;
+; A standalone educational scene that visualizes the AABB overlap
+; algorithm from the Math Connection section of Day 7.
+;
+; TO USE:
+;   In Godot, go to Project → Project Settings → Run → Main Scene
+;   and temporarily change it to this scene. Run with F5.
+;   Then switch back to scenes/Main.tscn for gameplay.
+;
+; What you'll see:
+;   - Five pairs of rectangles drawn on screen
+;   - Each pair labeled "HIT" (green) or "MISS" (red)
+;   - Full step-by-step math printed to the Output panel
+; ─────────────────────────────────────────────────────────────
+
+[node name="AABBDemo" type="Node2D"]
+script = ExtResource("1_demo")

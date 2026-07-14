@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://coin_day7"]
+
+[ext_resource type="Script" path="res://scripts/Coin.gd" id="1_coin"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_coin"]
+; The collision shape for the coin is a circle with radius 12 pixels.
+; This matches the visual size of the coin sprite roughly.
+;
+; DAY 7 CHALLENGE: Try radius=20 — does it feel easier to collect?
+; Try radius=6 — does it feel harder? Which is more "fair"?
+radius = 12.0
+
+; ─────────────────────────────────────────────────────────────
+; Coin scene:
+;   Area2D                 ← sensor node (no physical blocking)
+;   ├── CollisionShape2D   ← the "detection zone" (CircleShape2D)
+;   └── Sprite2D           ← yellow coin graphic
+;
+; DAY 7 FOCUS:
+;   Area2D is different from CharacterBody2D and StaticBody2D.
+;   It detects overlaps WITHOUT physically blocking movement.
+;   This is perfect for collectibles, triggers, and checkpoints.
+;
+; SIGNAL CONNECTION:
+;   The body_entered signal is connected in Coin.gd _ready().
+;   In the editor you can also see it under:
+;     Select Area2D → Node panel → Signals → body_entered
+; ─────────────────────────────────────────────────────────────
+
+[node name="Coin" type="Area2D"]
+script = ExtResource("1_coin")
+
+; Collision settings:
+;   collision_layer = 0  (coins don't "exist" on any physics layer)
+;   collision_mask  = 1  (coins detect objects on layer 1 — the player)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_coin")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+; Yellow circle placeholder — replace with a real coin sprite.
+modulate = Color(1.0, 0.85, 0.1, 1.0)
+texture = null

@@ -1,0 +1,112 @@
+[gd_scene load_steps=8 format=3 uid="uid://day11challenge"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/Enemy_Challenge.gd" id="2_challenge"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(800, 20)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(20, 600)
+
+; ── Root ──────────────────────────────────────────────────────────────────────
+[node name="Game" type="Node2D"]
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 800.0
+offset_bottom = 600.0
+color = Color(0.1, 0.12, 0.18, 1)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+[node name="WallTop"    type="CollisionShape2D" parent="Walls"]
+position = Vector2(400, 5)
+shape = SubResource("2")
+[node name="WallBottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(400, 595)
+shape = SubResource("2")
+[node name="WallLeft"   type="CollisionShape2D" parent="Walls"]
+position = Vector2(5, 300)
+shape = SubResource("3")
+[node name="WallRight"  type="CollisionShape2D" parent="Walls"]
+position = Vector2(795, 300)
+shape = SubResource("3")
+
+; ── Player ────────────────────────────────────────────────────────────────────
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(400, 300)
+script = ExtResource("1_player")
+
+[node name="Sprite" type="ColorRect" parent="Player"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("1")
+
+[node name="NameLabel" type="Label" parent="Player"]
+offset_left = -30.0
+offset_top = -36.0
+offset_right = 30.0
+offset_bottom = -20.0
+text = "PLAYER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+
+; ── Smart Enemy (4-state machine) ─────────────────────────────────────────────
+[node name="SmartEnemy" type="CharacterBody2D" parent="."]
+position = Vector2(150, 300)
+script = ExtResource("2_challenge")
+
+[node name="Sprite" type="ColorRect" parent="SmartEnemy"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SmartEnemy"]
+shape = SubResource("1")
+
+[node name="NameLabel" type="Label" parent="SmartEnemy"]
+offset_left = -45.0
+offset_top = -36.0
+offset_right = 45.0
+offset_bottom = -20.0
+text = "SMART ENEMY"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+
+[node name="DebugLabel" type="Label" parent="SmartEnemy"]
+offset_left = -55.0
+offset_top = 20.0
+offset_right = 90.0
+offset_bottom = 80.0
+theme_override_font_sizes/font_size = 9
+theme_override_colors/font_color = Color(1, 1, 0.4, 1)
+
+[node name="DetectVisual" type="Node2D" parent="SmartEnemy"]
+
+; ── HUD ───────────────────────────────────────────────────────────────────────
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="TitleLabel" type="Label" parent="HUD"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 700.0
+offset_bottom = 28.0
+text = "Day 11 – CHALLENGE: Smart Enemy (Patrol → Wait → Chase → Return)"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1)
+
+[node name="Legend" type="Label" parent="HUD"]
+offset_left = 8.0
+offset_top = 575.0
+offset_right = 792.0
+offset_bottom = 595.0
+text = "🔵 PATROL   🟡 WAIT (spotted!)   🔴 CHASE   🟢 RETURN (going home)"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)

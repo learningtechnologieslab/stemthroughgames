@@ -1,0 +1,103 @@
+[gd_scene load_steps=7 format=3 uid="uid://day12main"]
+
+[ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/HUD.gd" id="3_hud"]
+
+[sub_resource type="RectangleShape2D" id="floor_shape"]
+size = Vector2(640, 20)
+
+[sub_resource type="RectangleShape2D" id="player_shape"]
+size = Vector2(32, 48)
+
+[sub_resource type="RectangleShape2D" id="platform_shape"]
+size = Vector2(200, 20)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.13, 0.18, 0.28, 1)
+z_index = -10
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(320, 350)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("floor_shape")
+
+[node name="Visual" type="ColorRect" parent="Floor"]
+position = Vector2(-320, -10)
+size = Vector2(640, 20)
+color = Color(0.3, 0.6, 0.3, 1)
+
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2(320, 240)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+shape = SubResource("platform_shape")
+
+[node name="Visual" type="ColorRect" parent="Platform"]
+position = Vector2(-100, -10)
+size = Vector2(200, 20)
+color = Color(0.5, 0.4, 0.2, 1)
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(100, 290)
+script = ExtResource("2_player")
+add_to_group = ["player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("player_shape")
+
+[node name="Visual" type="ColorRect" parent="Player"]
+position = Vector2(-16, -24)
+size = Vector2(32, 48)
+color = Color(0.2, 0.6, 1.0, 1)
+
+[node name="Label" type="Label" parent="Player"]
+position = Vector2(-10, -40)
+text = "P"
+modulate = Color(1, 1, 1, 0.8)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD"]
+anchors_preset = 0
+position = Vector2(10, 8)
+size = Vector2(620, 36)
+theme_override_constants/separation = 30
+
+[node name="ScoreLabel" type="Label" parent="HUD/HBoxContainer"]
+custom_minimum_size = Vector2(160, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
+
+[node name="HealthLabel" type="Label" parent="HUD/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "HP: 100"
+
+[node name="TimerLabel" type="Label" parent="HUD/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Time: 60"
+
+[node name="HUDBackground" type="ColorRect" parent="HUD"]
+z_index = -1
+position = Vector2(0, 0)
+size = Vector2(640, 52)
+color = Color(0, 0, 0, 0.5)
+
+[node name="InstructionsLabel" type="Label" parent="HUD"]
+position = Vector2(10, 320)
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.7)
+theme_override_font_sizes/font_size = 13
+text = "Arrow keys: move  |  Space: jump  |  C: coin (+10)  |  H: hit (-25)  |  R: heal (+25)  |  F1: debug"

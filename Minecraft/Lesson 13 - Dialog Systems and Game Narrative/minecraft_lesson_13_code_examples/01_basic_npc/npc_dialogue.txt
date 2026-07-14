@@ -1,0 +1,92 @@
+===============================================================
+  EXAMPLE 01 — Basic NPC Dialogue
+  Day 13: Dialogue Systems & Game Narrative
+===============================================================
+
+HOW TO USE THIS FILE
+--------------------
+Minecraft Education Edition doesn't use code files you run like
+a program. Instead, you copy these commands one at a time into
+the right places inside your Minecraft world.
+
+This example shows the SIMPLEST possible NPC — one character
+who speaks three lines in order when the player clicks "Next".
+
+---------------------------------------------------------------
+STEP 1 — Place Your NPC
+---------------------------------------------------------------
+1. Open your Minecraft world in Creative Mode
+2. Open your inventory and find the "NPC Spawn Egg"
+   (search for "NPC" in the search bar)
+3. Right-click on the ground to place the NPC
+4. You should see a villager-like character appear
+
+---------------------------------------------------------------
+STEP 2 — Open the NPC Editor
+---------------------------------------------------------------
+1. Right-click (or tap) the NPC to open the NPC Edit screen
+2. You will see these fields:
+     - Name:          (the name shown above the NPC's head)
+     - Dialogue Box:  (the text the NPC says)
+     - Add Button:    (buttons the player can click)
+
+---------------------------------------------------------------
+STEP 3 — Enter the Opening Dialogue
+---------------------------------------------------------------
+In the "Name" field, type:
+    Elder Mira
+
+In the "Dialogue Box" field, type exactly this:
+
+    Welcome to the village, traveler.
+    We have a goblin problem in the forest nearby.
+    Will you help us?
+
+(The NPC will display this text when the player interacts.)
+
+---------------------------------------------------------------
+STEP 4 — Add the "Next" Button
+---------------------------------------------------------------
+Click "Add Button" and fill in:
+
+    Button Label:   Next
+    On-Click Command:  (leave this EMPTY for now)
+
+This gives the player a button to click. In Example 02, we
+will make the button actually DO something.
+
+---------------------------------------------------------------
+WHAT IS HAPPENING — The Array Connection
+---------------------------------------------------------------
+Think of the NPC's dialogue as an ordered list (an array):
+
+    Position 0 → "Welcome to the village, traveler."
+    Position 1 → "We have a goblin problem in the forest nearby."
+    Position 2 → "Will you help us?"
+
+Key rules (same as code arrays):
+  • The first line is always at position 0
+  • The last valid position is (total lines) − 1
+  • Going past the end = out of bounds (no more text to show)
+
+---------------------------------------------------------------
+STEP 5 — Test It!
+---------------------------------------------------------------
+1. Close the NPC editor (click the X)
+2. Switch to Survival or Adventure mode
+   (type /gamemode survival or /gamemode adventure in chat)
+3. Walk up to the NPC and right-click to start the conversation
+4. You should see Elder Mira's dialogue appear in a popup box
+5. Click "Next" to close it
+
+---------------------------------------------------------------
+CHECKPOINT QUESTIONS
+---------------------------------------------------------------
+  ✏  Which position is "Will you help us?" in the dialogue list?
+  ✏  What would happen if you had 5 lines of dialogue?
+      What would the last valid position number be?
+  ✏  Can the player change the story right now? Why or why not?
+
+===============================================================
+  NEXT: Open 02_scoreboard_variables to add player choices!
+===============================================================

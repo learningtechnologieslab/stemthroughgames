@@ -1,0 +1,126 @@
+# ============================================================
+#  EXAMPLE 5 — Coordinate Scavenger Hunt
+#  Lesson: Day 2 — Spatial Thinking & 3D Coordinates
+#  Tool:   Minecraft Education Edition (Chat)
+# ============================================================
+#
+#  TEACHER SETUP
+#  -------------
+#  Load the starter world before class.  The starter world has
+#  coloured wool blocks or signs placed at each target location
+#  so students can confirm they've arrived.
+#
+#  If you don't have the starter world, you can set up targets
+#  manually using the commands in setup_targets.txt (same folder).
+#
+#  STUDENT INSTRUCTIONS
+#  --------------------
+#  1.  Start at world spawn.  Press F3 and write down your
+#      starting X, Y, Z in your notebook.
+#  2.  For each stop below, type the /tp command in chat (T key).
+#  3.  When you arrive, press F3 and confirm your coordinates.
+#  4.  Answer the question for that stop in your notebook.
+#  5.  When you've visited all stops, try the Extension challenge.
+#
+# ============================================================
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 1 — The World Origin
+# ══════════════════════════════════════════════════════════════
+/tp @s 0 64 0
+
+#  ✏️  Questions:
+#  a. Which corner of the Minecraft map is this?
+#  b. How is this the same as (0, 0) on your graph paper?
+#  c. How is it different?  (Hint: there are THREE numbers here, not two.)
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 2 — 100 Blocks East
+# ══════════════════════════════════════════════════════════════
+/tp @s 100 64 0
+
+#  ✏️  Questions:
+#  a. Which coordinate changed from Stop 1?  By how much?
+#  b. Are you East or West of origin?
+#  c. Write a relative /tp command to get back to origin from here.
+#     Answer: /tp @s _______ ~ ~
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 3 — Underground Cave
+# ══════════════════════════════════════════════════════════════
+/tp @s 0 20 0
+
+#  ✏️  Questions:
+#  a. What is your Y value?  Is it above or below sea level (Y=64)?
+#  b. How many blocks underground are you?  (64 - 20 = ?)
+#  c. Look at the F3 screen — what biome are you in?
+#  d. Can you see the gold block placed at this location?
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 4 — Sky Limit
+# ══════════════════════════════════════════════════════════════
+/tp @s 0 255 0
+
+#  ✏️  Questions:
+#  a. How high above sea level are you?  (255 - 64 = ?)
+#  b. Can you see the world below?  Describe what you see.
+#  c. In Minecraft 1.18+, the new sky limit is Y=319.
+#     How much higher is that than the old limit?
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 5 — The Hidden Chest  🎁
+# ══════════════════════════════════════════════════════════════
+/tp @s 50 64 -50
+
+#  ✏️  Questions:
+#  a. Z is negative here.  Which direction is negative Z?
+#     (North or South?)
+#  b. You are 50 blocks East (X=50) and 50 blocks North (Z=-50).
+#     On your graph paper, which quadrant would this be in?
+#  c. Can you find the chest?  Open it and read the sign inside.
+
+
+# ══════════════════════════════════════════════════════════════
+# STOP 6 — Diagonal Sprint
+# ══════════════════════════════════════════════════════════════
+/tp @s 75 64 75
+
+#  ✏️  Questions:
+#  a. You moved from (0,64,0) to (75,64,75).
+#     Which two coordinates changed?  Which stayed the same?
+#  b. Calculate the horizontal distance traveled using the formula:
+#     d = sqrt(ΔX² + ΔZ²)   (ignore Y since it didn't change)
+#     d = sqrt(75² + 75²) = sqrt(_____ + _____) = sqrt(_____) ≈ _____
+#  c. Answer: ≈ 106 blocks.  Why is it more than 75?
+
+
+# ══════════════════════════════════════════════════════════════
+# EXTENSION — Build a Square
+# ══════════════════════════════════════════════════════════════
+
+#  Without moving, write four /tp commands that would visit each
+#  corner of a 10×10 square centred on (75, 64, 75).
+#  The corners are at:  (70,64,70)  (80,64,70)  (80,64,80)  (70,64,80)
+#
+#  Then calculate:
+#  a. Side length of the square  = _____ blocks
+#  b. Perimeter of the square    = _____ blocks
+#  c. Area of the square         = _____ square blocks
+#
+#  Fill in the commands:
+#  Corner 1:  /tp @s _____ _____ _____
+#  Corner 2:  /tp @s _____ _____ _____
+#  Corner 3:  /tp @s _____ _____ _____
+#  Corner 4:  /tp @s _____ _____ _____
+
+#  TEACHER ANSWERS:
+#  Corner 1:  /tp @s 70 64 70
+#  Corner 2:  /tp @s 80 64 70
+#  Corner 3:  /tp @s 80 64 80
+#  Corner 4:  /tp @s 70 64 80
+#  Side = 10, Perimeter = 40, Area = 100

@@ -1,0 +1,79 @@
+# ============================================================
+#  EXAMPLE 2 — Relative Coordinates  ( ~ tilde notation )
+#  Lesson: Day 2 — Spatial Thinking & 3D Coordinates
+#  Tool:   Minecraft Education Edition (Chat / Command Block)
+# ============================================================
+#
+#  THE TILDE  ~  SYMBOL
+#  --------------------
+#  A tilde (~) means "from where I am right now."
+#  It reads like this:
+#
+#    /tp @s ~5 ~ ~     →  Move 5 blocks East, stay at same Y and Z
+#    /tp @s ~ ~5 ~     →  Move 5 blocks UP, stay at same X and Z
+#    /tp @s ~ ~ ~5     →  Move 5 blocks South, stay at same X and Y
+#    /tp @s ~0 ~0 ~0   →  Stay exactly where you are (does nothing useful)
+#
+#  Absolute vs. Relative comparison:
+#    /tp @s 0 64 0      → Always goes to world origin — same spot every time
+#    /tp @s ~ ~ ~       → Stays where you are — X, Y, Z all "from here"
+#    /tp @s ~10 ~ ~     → Goes 10 blocks East OF WHEREVER YOU ARE NOW
+#
+# ============================================================
+
+# ------ PART A: Moving One Axis at a Time ------
+# These are great for demonstrating in class.
+# Stand somewhere interesting, then run each command.
+# Watch the F3 screen after each one.
+
+# Move 10 blocks East  (X + 10)
+/tp @s ~10 ~ ~
+
+# Move 10 blocks West  (X - 10)
+/tp @s ~-10 ~ ~
+
+# Move 10 blocks UP  (Y + 10)   ← great for seeing the world from above!
+/tp @s ~ ~10 ~
+
+# Move 10 blocks DOWN  (Y - 10)  ← be careful of falling!
+/tp @s ~ ~-10 ~
+
+# Move 10 blocks South  (Z + 10)
+/tp @s ~ ~ ~10
+
+# Move 10 blocks North  (Z - 10)
+/tp @s ~ ~ ~-10
+
+
+# ------ PART B: Moving on Multiple Axes ------
+
+# Move diagonally: 5 East and 5 South (like moving on a map)
+/tp @s ~5 ~ ~5
+
+# Jump forward AND up (simulate a big jump)
+/tp @s ~ ~3 ~5
+
+# Move to a spot 20 blocks East and 10 blocks above current position
+/tp @s ~20 ~10 ~
+
+
+# ------ PART C: Classroom Challenges ------
+# Start at origin:  /tp @s 0 64 0
+# Then use ONLY relative commands to reach each target.
+# Write down the relative command you used.
+
+# Challenge 1: Reach position (50, 64, 0) using one relative command.
+# Your answer: /tp @s _____ ~ ~
+
+# Challenge 2: Reach position (50, 74, 0) — same spot but 10 blocks higher.
+# Your answer: /tp @s _____ _____ ~
+
+# Challenge 3: Return to origin (0, 64, 0) using a relative command.
+# Hint: you are currently at (50, 74, 0).
+# Your answer: /tp @s _____ _____ _____
+
+
+# ------ PART D: Answers (Teacher Reference) ------
+# Challenge 1:  /tp @s ~50 ~ ~
+# Challenge 2:  /tp @s ~50 ~10 ~   (or /tp @s ~ ~10 ~ then /tp @s ~50 ~ ~)
+# Challenge 3:  /tp @s ~-50 ~-10 ~0

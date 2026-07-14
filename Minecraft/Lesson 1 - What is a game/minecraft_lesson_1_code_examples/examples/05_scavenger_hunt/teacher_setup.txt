@@ -1,0 +1,34 @@
+# ============================================================
+#  TEACHER SETUP — Place Scavenger Hunt Targets
+#  Run these commands BEFORE students arrive.
+#  Requires: Creative Mode + cheats enabled
+# ============================================================
+#
+#  These commands place visible markers and a chest at each
+#  scavenger hunt stop.  Run them all from the chat bar.
+#
+
+# Stop 1 — Origin marker (glowstone so it's visible underground too)
+/setblock 0 64 0 glowstone
+/setblock 0 65 0 oak_sign
+
+# Stop 2 — Gold block as East landmark
+/setblock 100 64 0 gold_block
+
+# Stop 3 — Diamond block underground
+/setblock 0 20 0 diamond_block
+/setblock 0 21 0 glowstone
+
+# Stop 4 — Sky marker (obsidian platform at Y=255)
+/setblock 0 255 0 obsidian
+/setblock -1 255 0 obsidian
+/setblock 1 255 0 obsidian
+/setblock 0 255 -1 obsidian
+/setblock 0 255 1 obsidian
+
+# Stop 5 — Chest with a message (place chest, fill with a written book)
+/setblock 50 64 -50 chest
+/setblock 50 65 -50 oak_sign
+
+# Stop 6 — Coloured wool marker
+/setblock 75 64 75 lime_wool

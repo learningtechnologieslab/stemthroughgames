@@ -1,0 +1,25 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; but for STEM Through Games Day 2 we keep it simple!
+
+config_version=5
+
+[application]
+
+config/name="STEM Through Games – Day 2: Coordinates Explorer"
+config/description="A starter project for Day 2 of STEM Through Games.
+Students explore 2D coordinates, the Godot editor, and basic GDScript."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://assets/sprites/icon.svg"
+
+[display]
+
+window/size/viewport_width=1024
+window/size/viewport_height=600
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

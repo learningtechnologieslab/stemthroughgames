@@ -1,0 +1,121 @@
+# ============================================================
+#  EXAMPLE 3 — Placing Blocks with /setblock
+#  Lesson: Day 2 — Spatial Thinking & 3D Coordinates (Enrichment)
+#  Tool:   Minecraft Education Edition (Chat / Command Block)
+# ============================================================
+#
+#  THE /setblock COMMAND
+#  ----------------------
+#  Places a single block at an exact coordinate in the world.
+#
+#  Format:  /setblock  X  Y  Z  block_name
+#
+#  Example: /setblock 5 64 5 gold_block
+#           → Places a gold block at X=5, Y=64, Z=5
+#
+#  IMPORTANT: You don't need to be standing at the block's location.
+#             You just need to know its coordinates!
+#
+# ============================================================
+
+# ------ PART A: Single Block Placement ------
+
+# Place a glowstone block at the world origin (useful as a landmark!)
+/setblock 0 64 0 glowstone
+
+# Place a gold block 10 blocks East of origin
+/setblock 10 64 0 gold_block
+
+# Place a diamond block underground
+/setblock 0 20 0 diamond_block
+
+# Place a red wool block above the origin (good for marking heights)
+/setblock 0 70 0 red_wool
+
+# Replace the origin marker with air (deletes the block)
+/setblock 0 64 0 air
+
+
+# ------ PART B: Recreating the Graph Paper Shape ------
+#
+# In the Warm-Up, students plotted these 5 points on graph paper:
+#   A(2, 3)   B(-1, 4)   C(-3, -2)   D(4, -1)   E(0, 0)
+#
+# We can place blocks at those locations in Minecraft!
+# For Minecraft we use:  X = graph X,  Z = graph Y,  Y = 64 (sea level)
+#
+# The translation rule:
+#   Graph (x, y)  →  Minecraft /setblock  x  64  y
+#
+# NOTE: In Minecraft, positive Z = South. On the math graph, positive Y = Up.
+#       This is a great discussion point for the class!
+
+# Point A (2, 3) on graph  →  X=2, Z=3 in Minecraft
+/setblock 2 64 3 lime_wool
+
+# Point B (-1, 4)  →  X=-1, Z=4
+/setblock -1 64 4 cyan_wool
+
+# Point C (-3, -2)  →  X=-3, Z=-2
+/setblock -3 64 -2 yellow_wool
+
+# Point D (4, -1)  →  X=4, Z=-1
+/setblock 4 64 -1 orange_wool
+
+# Point E (0, 0) — the origin
+/setblock 0 64 0 white_wool
+
+
+# ------ PART C: A Line of Blocks (Counting with Coordinates) ------
+# Place a row of 5 colored blocks along the X axis (heading East).
+# Each block is at the same Y and Z, just a different X.
+
+/setblock 1 64 0 red_wool
+/setblock 2 64 0 orange_wool
+/setblock 3 64 0 yellow_wool
+/setblock 4 64 0 lime_wool
+/setblock 5 64 0 cyan_wool
+
+# QUESTION: What changes between each command?
+# ANSWER:   Only X changes — it increases by 1 each time.
+#           Y and Z stay the same. That's what makes it a straight row!
+
+
+# ------ PART D: Extension — A Square Outline ------
+# Students who finish early can try building a 5×5 square outline.
+# All blocks sit at Y=64 (sea level).
+# The four corners are at (0,64,0), (5,64,0), (5,64,5), (0,64,5).
+
+# Corner blocks
+/setblock 0 64 0 gold_block
+/setblock 5 64 0 gold_block
+/setblock 5 64 5 gold_block
+/setblock 0 64 5 gold_block
+
+# Fill the north edge (Z=0, X goes 1–4)
+/setblock 1 64 0 stone
+/setblock 2 64 0 stone
+/setblock 3 64 0 stone
+/setblock 4 64 0 stone
+
+# Fill the south edge (Z=5, X goes 1–4)
+/setblock 1 64 5 stone
+/setblock 2 64 5 stone
+/setblock 3 64 5 stone
+/setblock 4 64 5 stone
+
+# Fill the west edge (X=0, Z goes 1–4)
+/setblock 0 64 1 stone
+/setblock 0 64 2 stone
+/setblock 0 64 3 stone
+/setblock 0 64 4 stone
+
+# Fill the east edge (X=5, Z goes 1–4)
+/setblock 5 64 1 stone
+/setblock 5 64 2 stone
+/setblock 5 64 3 stone
+/setblock 5 64 4 stone
+
+# Side length = 5 blocks.  Perimeter = 4 × 5 = 20 blocks.
+# Can you calculate the side length using coordinates alone?
+# Distance = |X2 - X1| = |5 - 0| = 5   ✓

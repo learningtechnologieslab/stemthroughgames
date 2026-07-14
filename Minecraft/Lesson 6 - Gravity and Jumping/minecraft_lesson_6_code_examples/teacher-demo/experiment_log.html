@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 6 — Experiment Log</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    background: #F9FBF9;
+    color: #1A1A1A;
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  header {
+    background: #1B5E20;
+    color: white;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  header h1 { font-size: 20px; margin-bottom: 4px; }
+  header .sub { font-size: 13px; color: #A5D6A7; }
+
+  .name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .field label { font-size: 12px; color: #546E7A; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; display: block; }
+  .field input {
+    width: 100%;
+    border: 2px solid #C8E6C9;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+  }
+  .field input:focus { outline: none; border-color: #2E7D32; }
+
+  h2 { font-size: 15px; color: #1B5E20; margin-bottom: 10px; border-left: 4px solid #4CAF50; padding-left: 10px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+  thead tr { background: #1B5E20; color: white; }
+  thead th { padding: 8px 10px; text-align: left; font-size: 12px; }
+  tbody tr:nth-child(even) { background: #F1F8E9; }
+  tbody td { padding: 0; border-bottom: 1px solid #C8E6C9; }
+  tbody td input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+  }
+  tbody td input:focus { outline: none; background: #E8F5E9; }
+  tbody td.obs input { font-family: Arial, sans-serif; }
+
+  .exit-ticket {
+    background: white;
+    border: 2px solid #C8E6C9;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .exit-ticket h2 { margin-bottom: 12px; }
+  .exit-ticket .q {
+    margin-bottom: 14px;
+  }
+  .exit-ticket .q label { font-size: 13px; font-weight: bold; display: block; margin-bottom: 6px; color: #2E7D32; }
+  .exit-ticket .q textarea {
+    width: 100%;
+    border: 2px solid #C8E6C9;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+    min-height: 60px;
+  }
+  .exit-ticket .q textarea:focus { outline: none; border-color: #2E7D32; }
+
+  .btn-print {
+    background: #1B5E20;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    float: right;
+    margin-bottom: 16px;
+  }
+  .btn-print:hover { background: #2E7D32; }
+
+  @media print {
+    .btn-print { display: none; }
+    body { padding: 12px; }
+    .field input, tbody td input, textarea { border: 1px solid #ccc !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⛏️ Day 6 — Gravity &amp; Jumping: Experiment Log</h1>
+  <div class="sub">STEM through Games · Minecraft Education Edition · Physics Simulation</div>
+</header>
+
+<button class="btn-print" onclick="window.print()">🖨 Print</button>
+
+<div class="name-row" style="clear:both;">
+  <div class="field"><label>Student Name</label><input type="text" placeholder="Your name"></div>
+  <div class="field"><label>Date</label><input type="text" placeholder="Today's date"></div>
+  <div class="field"><label>Period / Class</label><input type="text" placeholder="Period #"></div>
+</div>
+
+<!-- Core Experiment Table -->
+<h2>Part 1 — Changing JUMP_FORCE (keep GRAVITY = −0.6)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>JUMP_FORCE</th>
+      <th>GRAVITY</th>
+      <th>Guessed peak height?</th>
+      <th>Actual peak height</th>
+      <th>How did it feel?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><input value="5"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="10"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="15"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="20"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="Your choice:"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+  </tbody>
+</table>
+
+<!-- Gravity Experiment Table -->
+<h2>Part 2 — Changing GRAVITY (keep JUMP_FORCE = 10)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>JUMP_FORCE</th>
+      <th>GRAVITY</th>
+      <th>Guessed air ticks?</th>
+      <th>Actual air ticks</th>
+      <th>What world does this feel like?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><input value="10"></td><td><input value="-0.2"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="10"></td><td><input value="-0.6"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="10"></td><td><input value="-1.2"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+    <tr><td><input value="10"></td><td><input value="-2.5"></td><td class="obs"><input></td><td><input></td><td class="obs"><input></td></tr>
+  </tbody>
+</table>
+
+<!-- Free Exploration Table -->
+<h2>Part 3 — Design Your World (choose any values)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>JUMP_FORCE</th>
+      <th>GRAVITY</th>
+      <th>World / Biome Concept</th>
+      <th>Why this combination fits your world</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><input></td><td><input></td><td class="obs"><input></td><td class="obs"><input></td></tr>
+    <tr><td><input></td><td><input></td><td class="obs"><input></td><td class="obs"><input></td></tr>
+    <tr><td><input></td><td><input></td><td class="obs"><input></td><td class="obs"><input></td></tr>
+  </tbody>
+</table>
+
+<!-- Math Challenge -->
+<h2>Part 4 — Math Challenge</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>Your calculation / answer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="obs" style="width:50%;"><input readonly value="With JUMP_FORCE=10 and GRAVITY=−0.6, how many ticks until the agent reaches its peak? (Hint: peak = when velocityY = 0)"></td>
+      <td class="obs"><input></td>
+    </tr>
+    <tr>
+      <td class="obs"><input readonly value="Using the formula y(t) = v₀ × t + ½ × g × t², what is the peak height when JUMP_FORCE=10 and GRAVITY=−0.6?"></td>
+      <td class="obs"><input></td>
+    </tr>
+    <tr>
+      <td class="obs"><input readonly value="Is the jump arc symmetric (same time going up as coming down)? How could you test this?"></td>
+      <td class="obs"><input></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Exit Ticket -->
+<div class="exit-ticket">
+  <h2>🎟 Exit Ticket</h2>
+  <div class="q">
+    <label>1. In your own words: what does gravity do to an object's velocity each tick?</label>
+    <textarea></textarea>
+  </div>
+  <div class="q">
+    <label>2. Why is JUMP_FORCE positive in our Minecraft code (unlike Godot where JUMP_VELOCITY was negative)?</label>
+    <textarea></textarea>
+  </div>
+  <div class="q">
+    <label>3. One word to describe how your agent's jump felt during testing:</label>
+    <textarea style="min-height:40px;"></textarea>
+  </div>
+</div>
+
+</body>
+</html>

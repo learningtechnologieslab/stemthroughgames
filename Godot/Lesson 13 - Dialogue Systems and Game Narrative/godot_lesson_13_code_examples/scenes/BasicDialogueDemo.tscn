@@ -1,0 +1,139 @@
+[gd_scene load_steps=3 format=3 uid="uid://basic_demo"]
+
+[ext_resource type="Script" path="res://scripts/BasicDialogueDemo.gd" id="1_basicdemo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.1, 0.15, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.22, 0.46, 0.7, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="BasicDialogueDemo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_basicdemo")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.05, 0.07, 0.12, 1)
+
+[node name="InfoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.38
+anchor_bottom = 1.0
+offset_left = 20
+offset_top = 20
+offset_right = -20
+offset_bottom = -20
+
+[node name="InfoTitle" type="Label" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = 12
+offset_bottom = 40
+text = "Array State"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+horizontal_alignment = 1
+
+[node name="InfoText" type="RichTextLabel" parent="InfoPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12
+offset_top = 48
+offset_right = -12
+offset_bottom = -12
+bbcode_enabled = true
+text = "[i]Loading...[/i]"
+theme_override_font_sizes/normal_font_size = 13
+
+[node name="DialogueBox" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.4
+anchor_top = 0.55
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0
+offset_top = -10
+offset_right = -20
+offset_bottom = -20
+
+[node name="SpeakerLabel" type="Label" parent="DialogueBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 16
+offset_top = 12
+offset_bottom = 40
+text = "Village Elder"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+
+[node name="DialogueLabel" type="RichTextLabel" parent="DialogueBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_left = 16
+offset_top = 46
+offset_right = -16
+offset_bottom = -60
+bbcode_enabled = true
+text = "Welcome to the village, traveler."
+theme_override_font_sizes/normal_font_size = 16
+
+[node name="NextButton" type="Button" parent="DialogueBox"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -120
+offset_top = -52
+offset_right = -16
+offset_bottom = -16
+text = "Next ▶"
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 20
+offset_top = 20
+offset_right = 140
+offset_bottom = 52
+text = "← Back"
+
+[node name="CompletionLabel" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.4
+anchor_top = 0.55
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0
+offset_top = -10
+offset_right = -20
+offset_bottom = -20
+bbcode_enabled = true
+text = "[center][color=lime]Dialogue complete![/color][/center]"
+theme_override_font_sizes/normal_font_size = 18

@@ -1,0 +1,97 @@
+{
+  "_comment": "=============================================================",
+  "_comment2": "Day 15 - Custom Sound Events for STEM Through Games",
+  "_comment3": "Place this file at: assets/minecraft/sounds.json",
+  "_comment4": "Audio files (.ogg) go in: assets/minecraft/sounds/custom/",
+  "_comment5": "=============================================================",
+
+  "custom.footstep": {
+    "_comment": "Plays when the player is walking. Triggered by command block.",
+    "sounds": [
+      {
+        "name": "custom/footstep",
+        "volume": 0.6,
+        "pitch": 1.0
+      }
+    ]
+  },
+
+  "custom.footstep_soft": {
+    "_comment": "A quieter footstep variant for sneaking. Great extension exercise!",
+    "sounds": [
+      {
+        "name": "custom/footstep",
+        "volume": 0.25,
+        "pitch": 0.85
+      }
+    ]
+  },
+
+  "custom.jump": {
+    "_comment": "Plays when the player leaves the ground.",
+    "sounds": [
+      {
+        "name": "custom/jump",
+        "volume": 0.8,
+        "pitch": 1.1
+      }
+    ]
+  },
+
+  "custom.land": {
+    "_comment": "Plays when the player lands back on the ground.",
+    "sounds": [
+      {
+        "name": "custom/land",
+        "volume": 0.7,
+        "pitch": 0.95
+      }
+    ]
+  },
+
+  "custom.collect": {
+    "_comment": "Plays when the player picks up a collectible (e.g. gold nugget).",
+    "sounds": [
+      {
+        "name": "custom/collect",
+        "volume": 1.0,
+        "pitch": 1.2
+      }
+    ]
+  },
+
+  "custom.hurt": {
+    "_comment": "Extension challenge: plays when player takes damage.",
+    "sounds": [
+      {
+        "name": "custom/hurt",
+        "volume": 0.9,
+        "pitch": 1.0
+      }
+    ]
+  },
+
+  "custom.theme": {
+    "_comment": "Background music. Set to loop=true so it repeats continuously.",
+    "sounds": [
+      {
+        "name": "custom/theme",
+        "volume": 0.4,
+        "pitch": 1.0,
+        "stream": true
+      }
+    ]
+  },
+
+  "custom.theme_tense": {
+    "_comment": "Extension: alternate music for dangerous areas (near caves, mobs, etc.).",
+    "sounds": [
+      {
+        "name": "custom/theme_tense",
+        "volume": 0.4,
+        "pitch": 1.0,
+        "stream": true
+      }
+    ]
+  }
+}

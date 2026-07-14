@@ -1,0 +1,118 @@
+╔══════════════════════════════════════════════════════════════╗
+║   MINECRAFT COMMAND QUICK REFERENCE — Day 13                ║
+║   Dialogue Systems & Game Narrative                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+SCOREBOARD (Variables)
+──────────────────────
+  Create a variable:
+    /scoreboard objectives add <name> dummy
+
+  Set to a number:
+    /scoreboard players set @p <name> <value>
+
+  Add to a number:
+    /scoreboard players add @p <name> <amount>
+
+  Reset to zero:
+    /scoreboard players reset @p <name>
+
+  Show on screen:
+    /scoreboard objectives setdisplay sidebar <name>
+
+  Delete a variable:
+    /scoreboard objectives remove <name>
+
+CHECKING CONDITIONS (If/Else)
+──────────────────────────────
+  Exact value:
+    /execute if score @p <name> matches <value> run <command>
+
+  Range (value or higher):
+    /execute if score @p <name> matches <value>.. run <command>
+
+  Range (value or lower):
+    /execute if score @p <name> matches ..<value> run <command>
+
+  Range (between two values):
+    /execute if score @p <name> matches <low>..<high> run <command>
+
+  Nearby players only:
+    /execute as @a[distance=..<blocks>] if score @s <name> matches <value> run <command>
+
+DIALOGUE & MESSAGES
+────────────────────
+  Speak as NPC (appears in chat):
+    /say <message>
+
+  Show message on screen (action bar):
+    /title @p actionbar {"text":"<message>","color":"<color>"}
+
+  Show formatted message (advanced):
+    /tellraw @p {"text":"<message>","color":"<color>","bold":true}
+
+  Colors: white, red, green, blue, yellow, aqua, gold,
+          dark_red, dark_green, dark_blue, gray, dark_gray
+
+WORLD EVENTS (story triggers)
+──────────────────────────────
+  Spawn a mob:
+    /summon <mob> <x> <y> <z>
+
+  Change weather:
+    /weather clear
+    /weather rain
+    /weather thunder
+
+  Give an item:
+    /give @p <item_name> <amount>
+
+  Fill an area with blocks (open/close a passage):
+    /fill <x1> <y1> <z1> <x2> <y2> <z2> <block>
+
+  Teleport player:
+    /tp @p <x> <y> <z>
+
+GAME MODE
+──────────
+  /gamemode creative      (build mode)
+  /gamemode survival      (play mode)
+  /gamemode adventure     (restricted play — good for testing)
+
+TARGET SELECTORS
+─────────────────
+  @p  nearest player to the command source
+  @a  all players in the world
+  @s  the entity running the command
+  @r  a random player
+
+  Filter by distance:    @a[distance=..<blocks>]
+  Filter by score:       @a[scores={<name>=<value>}]
+
+COMMAND BLOCK TYPES
+────────────────────
+  IMPULSE   — fires once when powered (use with buttons/levers)
+  REPEAT    — fires every game tick (20 times per second)
+  CHAIN     — fires after the previous block in the chain
+
+  Settings:
+    Always Active  — runs without needing Redstone power
+    Conditional    — only runs if the previous block succeeded
+
+╔══════════════════════════════════════════════════════════════╗
+║  CODE ↔ COMMAND TRANSLATION TABLE                           ║
+╠══════════════════════════════════════════════════════════════╣
+║  GDScript / Code              Minecraft Command              ║
+║  ────────────────────         ──────────────────────────     ║
+║  var trust = 0                /scoreboard objectives         ║
+║                                 add trust dummy              ║
+║  trust = 1                    /scoreboard players            ║
+║                                 set @p trust 1               ║
+║  trust += 1                   /scoreboard players            ║
+║                                 add @p trust 1               ║
+║  if trust == 1:               /execute if score @p           ║
+║                                 trust matches 1 run ...      ║
+║  dialogue[0]                  First NPC dialogue page        ║
+║  dialogue.size()              Total number of NPC pages      ║
+║  dialogue_index < size()      Stays within valid page range  ║
+╚══════════════════════════════════════════════════════════════╝

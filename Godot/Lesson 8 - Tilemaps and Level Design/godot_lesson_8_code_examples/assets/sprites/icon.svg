@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#0F1B2D"/>
+  <!-- Grid lines -->
+  <line x1="21" y1="0" x2="21" y2="64" stroke="#1E3A5F" stroke-width="1"/>
+  <line x1="42" y1="0" x2="42" y2="64" stroke="#1E3A5F" stroke-width="1"/>
+  <line x1="0" y1="21" x2="64" y2="21" stroke="#1E3A5F" stroke-width="1"/>
+  <line x1="0" y1="42" x2="64" y2="42" stroke="#1E3A5F" stroke-width="1"/>
+  <!-- Tile blocks (ground row) -->
+  <rect x="1" y="43" width="19" height="19" fill="#1A3A5C" rx="1"/>
+  <rect x="22" y="43" width="19" height="19" fill="#1A3A5C" rx="1"/>
+  <rect x="43" y="43" width="20" height="19" fill="#1A3A5C" rx="1"/>
+  <!-- Platform -->
+  <rect x="22" y="22" width="19" height="19" fill="#1A3A5C" rx="1"/>
+  <!-- Player (blue square) -->
+  <rect x="4" y="30" width="13" height="11" fill="#2E96FF" rx="2"/>
+  <!-- Eyes -->
+  <rect x="6" y="32" width="4" height="3" fill="white" rx="1"/>
+  <rect x="11" y="32" width="4" height="3" fill="white" rx="1"/>
+  <!-- Goal (gold) -->
+  <rect x="45" y="25" width="13" height="16" fill="#F5A623" rx="2"/>
+</svg>

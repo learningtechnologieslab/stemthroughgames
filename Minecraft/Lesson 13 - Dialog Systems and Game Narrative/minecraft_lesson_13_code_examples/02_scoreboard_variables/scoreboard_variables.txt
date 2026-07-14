@@ -1,0 +1,146 @@
+===============================================================
+  EXAMPLE 02 — Scoreboard Variables
+  Day 13: Dialogue Systems & Game Narrative
+===============================================================
+
+WHAT IS A SCOREBOARD?
+----------------------
+In Minecraft, a "scoreboard" stores numbers for each player —
+just like a variable in code. We will use it to remember
+whether the player agreed to help (trust = 1) or refused (trust = 0).
+
+This is the Minecraft equivalent of writing:
+    var trust = 0    (in GDScript or JavaScript)
+
+---------------------------------------------------------------
+STEP 1 — Create the Scoreboard Objective
+---------------------------------------------------------------
+Open the chat (press T) and type each command below, pressing
+Enter after each one.
+
+Command 1 — Create the "trust" variable:
+
+    /scoreboard objectives add trust dummy
+
+  What this does:
+    • "trust"  = the name of our variable
+    • "dummy"  = it tracks a number we set manually
+                 (not kills, deaths, or other auto-tracked things)
+
+Command 2 — Show the score on-screen (optional, useful for testing):
+
+    /scoreboard objectives setdisplay sidebar trust
+
+  You should see a "trust" counter appear on the right side
+  of the screen. It starts at 0 for everyone.
+
+Command 3 — Set your own trust score to 0 to start fresh:
+
+    /scoreboard players set @p trust 0
+
+  What @p means: "the nearest player" (you, when you type this)
+
+---------------------------------------------------------------
+THE ARRAY CONNECTION — Scoreboard AS a Variable
+---------------------------------------------------------------
+Compare how variables work in code vs. Minecraft:
+
+  GDScript (Godot):              Minecraft Command:
+  ─────────────────              ──────────────────────────────
+  var trust = 0                  /scoreboard players set @p trust 0
+  trust = 1                      /scoreboard players set @p trust 1
+  trust += 1                     /scoreboard players add @p trust 1
+  if trust == 1:                 /execute if score @p trust matches 1
+
+The scoreboard IS the variable. The same logic applies —
+you set it, you read it, and you use it to branch your story.
+
+---------------------------------------------------------------
+STEP 2 — Update Your NPC Buttons
+---------------------------------------------------------------
+Go back to your NPC from Example 01 (right-click it).
+Delete the old empty "Next" button and add TWO new buttons:
+
+  Button 1:
+    Label:           I will help!
+    On-Click Command: /scoreboard players set @p trust 1
+
+  Button 2:
+    Label:           No thanks.
+    On-Click Command: /scoreboard players set @p trust 0
+
+Now click the button and watch your sidebar score change!
+
+---------------------------------------------------------------
+STEP 3 — Add a Response with /say
+---------------------------------------------------------------
+We also want the NPC to respond after the player chooses.
+Add a second command to each button by placing Command Blocks
+in the world (see Example 03 for the full chain), OR use the
+"On-Click" field to chain a /say command:
+
+  Button 1 On-Click Command (you can only use one command per
+  button directly, so we add the spoken response via a nearby
+  Command Block — see Example 03):
+
+    /scoreboard players set @p trust 1
+
+  Nearby Command Block (chained, triggered by button):
+
+    /execute if score @p trust matches 1 run say Great! Meet me at the gate.
+
+  Button 2 On-Click Command:
+
+    /scoreboard players set @p trust 0
+
+  Nearby Command Block (chained, triggered by button):
+
+    /execute if score @p trust matches 0 run say You will regret this, traveler.
+
+---------------------------------------------------------------
+USEFUL SCOREBOARD COMMANDS — REFERENCE CARD
+---------------------------------------------------------------
+
+  Create a new variable (objective):
+    /scoreboard objectives add <name> dummy
+
+  Set a player's score to a specific number:
+    /scoreboard players set @p <name> <number>
+
+  Add to a player's score:
+    /scoreboard players add @p <name> <amount>
+
+  Check a player's score (use in /execute):
+    /execute if score @p <name> matches <number> run <command>
+
+  Check a range (e.g., trust is 1 OR higher):
+    /execute if score @p trust matches 1.. run <command>
+
+  Reset a score:
+    /scoreboard players reset @p <name>
+
+  Show scores on screen:
+    /scoreboard objectives setdisplay sidebar <name>
+
+  Remove a variable when done testing:
+    /scoreboard objectives remove <name>
+
+---------------------------------------------------------------
+TARGET SELECTOR REFERENCE
+---------------------------------------------------------------
+  @p  =  nearest player to where the command runs
+  @a  =  ALL players in the world
+  @s  =  the entity running the command (itself)
+  @r  =  a random player
+
+---------------------------------------------------------------
+CHECKPOINT QUESTIONS
+---------------------------------------------------------------
+  ✏  What command creates a new scoreboard variable?
+  ✏  What does "dummy" mean in the objectives add command?
+  ✏  What is the Minecraft equivalent of:  if trust == 1
+  ✏  Your array has 4 dialogue lines. What are the valid indices?
+
+===============================================================
+  NEXT: Open 03_branching_dialogue for the full story system!
+===============================================================

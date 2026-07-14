@@ -1,0 +1,58 @@
+DIALOGUE TREE DIAGRAM — Example 03
+===================================
+Use this as a reference while building in Minecraft.
+Your paper design should look something like this.
+
+                    ┌─────────────────────────────┐
+                    │         ELDER MIRA           │
+                    │  "Will you help the village?" │
+                    └──────────────┬───────────────┘
+                                   │
+                   ┌───────────────┴────────────────┐
+                   │                                 │
+          [Button A]                          [Button B]
+      "I will help!"                      "I have my own business."
+   trust = 1 (SET)                           trust = 0 (SET)
+                   │                                 │
+                   ▼                                 ▼
+    ┌──────────────────────┐           ┌──────────────────────┐
+    │  actionbar message:  │           │  actionbar message:  │
+    │  "Thank you! Speak   │           │  "A pity. The village│
+    │   to Guard Rowan."   │           │   will suffer."      │
+    └──────────┬───────────┘           └──────────────────────┘
+               │
+               ▼ (player walks to gate)
+    ┌──────────────────────┐
+    │      GUARD ROWAN     │
+    │  (checks trust score)│
+    └──────────┬───────────┘
+               │
+   ┌───────────┴────────────┐
+   │                        │
+IF trust = 1            IF trust = 0
+   │                        │
+   ▼                        ▼
+"Gate is open          "I cannot let
+ for you, hero!"        you through."
+
+
+SCOREBOARD STATE AFTER EACH CHOICE:
+─────────────────────────────────────
+  Player chose Help:    trust = 1,  questStarted = 1
+  Player chose Refuse:  trust = 0,  questStarted = 1
+
+  (questStarted helps you know the player HAS talked to Mira,
+   regardless of their choice)
+
+
+ARRAY INDEX MAPPING:
+──────────────────────
+  Mira's dialogue lines (ordered, 0-indexed):
+    [0]  "Welcome to the village, traveler."
+    [1]  "Goblins have been raiding our farms every night."
+    [2]  "We desperately need a brave adventurer."
+    [3]  "Will you help protect us?"
+
+  Total lines: 4
+  Valid indices: 0, 1, 2, 3
+  Last valid index = size - 1 = 4 - 1 = 3

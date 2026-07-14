@@ -1,0 +1,71 @@
+[gd_scene load_steps=6 format=3 uid="uid://player_scene"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1"]
+radius = 14.0
+height = 44.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+radius = 18.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"run",
+"speed": 12.0
+}, {
+"frames": [],
+"loop": false,
+"name": &"jump",
+"speed": 15.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"fall",
+"speed": 10.0
+}, {
+"frames": [],
+"loop": false,
+"name": &"hurt",
+"speed": 12.0
+}]
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_1")
+
+[node name="JumpSound" type="AudioStreamPlayer" parent="."]
+volume_db = 0.0
+pitch_scale = 1.0
+max_distance = 2000.0
+# TODO: Set stream = preload("res://audio/jump.wav")
+
+[node name="LandSound" type="AudioStreamPlayer" parent="."]
+volume_db = -3.0
+pitch_scale = 0.9
+# TODO: Set stream = preload("res://audio/land.wav")
+
+[node name="HurtSound" type="AudioStreamPlayer" parent="."]
+volume_db = 0.0
+pitch_scale = 1.0
+# TODO: Set stream = preload("res://audio/hurt.wav")
+
+[node name="HurtArea" type="Area2D" parent="."]
+
+[node name="HurtCollision" type="CollisionShape2D" parent="HurtArea"]
+shape = SubResource("CircleShape2D_hurt")
+disabled = true

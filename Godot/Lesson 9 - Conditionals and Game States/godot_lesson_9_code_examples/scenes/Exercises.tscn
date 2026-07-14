@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://day9exercises"]
+
+[ext_resource type="Script" path="res://scripts/Exercises.gd" id="1_exercises"]
+
+[node name="ExercisesRunner" type="Node"]
+script = ExtResource("1_exercises")

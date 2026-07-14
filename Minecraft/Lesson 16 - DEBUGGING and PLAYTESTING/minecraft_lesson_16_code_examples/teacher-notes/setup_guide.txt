@@ -1,0 +1,115 @@
+# Teacher Notes – Day 16 Code Examples
+# Minecraft Education Edition / MakeCode JavaScript
+
+## Preparation Checklist
+
+Before class, you need one Minecraft Education world for EACH bug.
+This file tells you exactly what to build in each world.
+
+---
+
+## World 1 – Bug 1: Undefined Variable (bug1_undefined_variable.js)
+
+BUILD:
+  - Flat grassy area, 10×10
+  - Scatter 6–8 GOLD BLOCKS on the surface (one block high)
+  - Well-lit area (torches) so no ambient mobs spawn
+  - Copy the BUGGY code into MakeCode Code Builder
+
+WHAT STUDENTS EXPERIENCE:
+  - Walk over a gold block → chat says "Score: 1" every single time
+  - Score never goes above 1, even after many steps
+  - Some students may see "Score: undefined + 1" depending on version
+
+HINT TO GIVE IF STUCK (after 3+ minutes):
+  "Add say('score is: ' + score) as the VERY FIRST line inside the
+  event handler. What does it say before you step on anything?"
+
+---
+
+## World 2 – Bug 2: Event Not Triggering (bug2_event_not_triggering.js)
+
+BUILD:
+  - Flat area with a simple parkour course (3–5 jumps)
+  - Place EMERALD BLOCKS at 3 "checkpoint" locations
+  - Also place 1–2 DIAMOND BLOCKS nearby (red herrings)
+  - Copy the BUGGY code (which listens for diamond, not emerald)
+
+WHAT STUDENTS EXPERIENCE:
+  - Walk everywhere — nothing happens
+  - No error, no crash, no message — total silence
+  - Feels like the code "isn't running" (it is — the condition just never matches)
+
+HINT TO GIVE IF STUCK (after 3+ minutes):
+  "Add say('walk event fired!') as the FIRST line inside the event,
+  before the if-statement. Does it appear in chat when you walk?"
+  (This proves the event IS firing, narrowing the bug to the condition.)
+
+---
+
+## World 3 – Bug 3: Command Block Silent Fail (bug3_command_block_fail.mcfunction)
+
+BUILD:
+  - Create a dramatic "boss arena" room with stone brick walls
+  - Place 4 COMMAND BLOCKS in a row, connected by redstone dust
+  - First block: IMPULSE, UNCONDITIONAL, Needs Redstone ON
+  - Remaining blocks: CHAIN, UNCONDITIONAL, Needs Redstone OFF
+  - Use the BUGGY commands from bug3_command_block_fail.mcfunction
+  - Place a LEVER to activate the sequence
+
+WHAT STUDENTS EXPERIENCE:
+  - Pull the lever → nothing happens
+  - No visual feedback, no error sound
+  - The command blocks just sit there
+
+HINT TO GIVE IF STUCK (after 3+ minutes):
+  "Open the first command block. Copy the command text, go to the chat
+  bar, type / and then paste it. What does Minecraft say?"
+  (This immediately reveals the syntax error.)
+
+---
+
+## World 4 – Bug 4: Mob Behavior (bug4_mob_behavior.js)
+
+BUILD:
+  - Large open arena (20×20)
+  - Flat stone floor with clear sightlines
+  - Light it well so students can see mobs appear/disappear
+  - Copy the BUGGY code into Code Builder
+
+WHAT STUDENTS EXPERIENCE:
+  - After 20 seconds: wave counter appears correctly
+  - One mob type fails silently (Giant)
+  - One zombie spawns FAR away (at world 0,0,0)
+  - One skeleton appears briefly then dies (underground suffocation)
+
+HINT TO GIVE IF STUCK (after 3+ minutes):
+  "Try typing /summon Giant in the chat bar. What happens?
+  Now try /summon zombie. What's different?"
+
+---
+
+## Timing Notes
+
+Part 1 (debugging):  ~20 minutes
+  - 3–4 minutes per bug is the target
+  - Students who finish all 4 early → direct to the bonus minigame
+  - Students stuck after 3 min → give the printed hint or pair them
+
+Part 2 (playtesting): ~15 minutes
+  - Partners switch after 7 minutes
+  - Set a visible timer students can see
+
+Common issue: students try to "fix everything" before letting their
+partner play. Remind them: an imperfect game is BETTER for playtesting
+because it surfaces more feedback.
+
+---
+
+## Extension Activities
+
+Fast finishers can:
+  1. Load bonus_complete_minigame.js and add a new mechanic
+  2. Write their OWN buggy version of any bug for a classmate to find
+  3. Add a say() trace to every function in the bonus game and document
+     what each one does (good intro to code documentation)

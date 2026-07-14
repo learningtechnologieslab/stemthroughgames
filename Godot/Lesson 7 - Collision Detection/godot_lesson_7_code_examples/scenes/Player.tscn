@@ -1,0 +1,41 @@
+[gd_scene load_steps=4 format=3 uid="uid://player_day7"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(28, 40)
+
+[sub_resource type="Gradient" id="Gradient_player"]
+colors = PackedColorArray(0.278, 0.573, 0.965, 1, 0.18, 0.384, 0.706, 1)
+
+; ─────────────────────────────────────────────────────────────
+; Player scene:
+;   CharacterBody2D            ← moves, detects floor/walls
+;   ├── CollisionShape2D       ← hitbox (RectangleShape2D 28×40px)
+;   └── Sprite2D               ← visual representation
+;
+; DAY 7 FOCUS: The CollisionShape2D is already here!
+;   Click it in the Scene panel to see the orange outline in the viewport.
+;   The shape tells Godot where the player physically exists.
+; ─────────────────────────────────────────────────────────────
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+
+; Add the Player to the "player" group so coins can identify it
+; (In the editor: select Player → Node panel → Groups → add "player")
+; This is also set via code in the script.
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+; DAY 7: This is the hitbox!
+; Shape = RectangleShape2D with size 28×40 pixels
+; Try changing the size and observe the effect in-game.
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+; Simple colored rectangle as a placeholder sprite.
+; Replace with a real character sprite texture in your own project.
+; Notice the sprite is drawn at the same size as the collision shape.
+; CHALLENGE: make the CollisionShape2D smaller — does it feel different?
+texture = null
+modulate = Color(0.278, 0.573, 0.965, 1)

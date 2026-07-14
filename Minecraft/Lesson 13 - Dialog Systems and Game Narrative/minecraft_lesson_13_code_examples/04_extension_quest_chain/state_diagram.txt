@@ -1,0 +1,54 @@
+MULTI-NPC QUEST CHAIN STATE DIAGRAM
+=====================================
+
+Each row is one scoreboard variable. Each column is one
+moment in the story. Read left to right to see how the
+numbers change as the player progresses.
+
+                    TRUST  questStarted  gateUnlocked  rewardGiven
+                    ─────  ────────────  ────────────  ───────────
+Start of world →      0         0             0             0
+
+Talks to Mira  →      0         0             0             0
+  Chooses Help →      1         1             0             0
+  Chooses Refuse→     0         1             0             0
+
+Passes gate    →      1         1             1             0
+  (trust must = 1)
+
+Reaches Selene →      1         1             1             0
+  Gets reward  →      1         1             1             1
+  (only happens once)
+
+
+CONDITIONAL LOGIC SUMMARY
+--------------------------
+
+  Gate opens when:     trust = 1
+  Selene rewards when: trust = 1  AND  questStarted = 1  AND  rewardGiven = 0
+
+This is the SAME as writing:
+
+  if (trust == 1 and questStarted == 1 and rewardGiven == 0):
+      give_reward()
+      rewardGiven = 1
+
+
+THE ARRAY PARALLEL
+------------------
+Think of the player's scoreboard state as an array of
+boolean (true/false) flags:
+
+  playerState = [trust, questStarted, gateUnlocked, rewardGiven]
+              = [  1,       1,             1,             0     ]
+                [0]      [1]            [2]             [3]
+
+  Position 0 (trust) being 1 means: player chose to help
+  Position 1 (questStarted) being 1 means: player spoke to Mira
+  Position 2 (gateUnlocked) being 1 means: player passed the gate
+  Position 3 (rewardGiven) being 1 means: reward already collected
+
+  To check position 0: /execute if score @p trust matches 1
+  To set position 2:   /scoreboard players set @p gateUnlocked 1
+
+  Same logic. Different syntax.

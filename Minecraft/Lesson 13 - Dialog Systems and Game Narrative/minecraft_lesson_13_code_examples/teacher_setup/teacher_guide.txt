@@ -1,0 +1,193 @@
+===============================================================
+  TEACHER SETUP GUIDE
+  Day 13: Dialogue Systems & Game Narrative
+  Minecraft Education Edition
+===============================================================
+
+BEFORE CLASS — CHECKLIST
+--------------------------
+  □ Minecraft Education Edition is installed and students
+    can log in with their school accounts
+  □ You have a world ready to share, or students will create
+    their own (both approaches work — see below)
+  □ Students have been given the examples folder (this folder)
+  □ Printed or on-screen dialogue tree template is ready
+  □ Projector is set up for demonstration
+
+---------------------------------------------------------------
+RECOMMENDED WORLD SETUP (Teacher-Prepared)
+---------------------------------------------------------------
+Creating a starter world saves 10–15 minutes of setup time
+and lets students focus on the dialogue/narrative design.
+
+  1. Launch Minecraft Education Edition
+  2. Create a new world:
+       - Game mode: Creative
+       - Difficulty: Peaceful
+       - World name: "Day13_DialogueStarter"
+  3. Build a small village:
+       - 4–6 simple houses
+       - A central square
+       - A gate/entrance area
+       - A tower for the extension NPC (Wizard Selene)
+  4. Run the setup commands (copy-paste from chat):
+       /scoreboard objectives add trust dummy
+       /scoreboard objectives add questStarted dummy
+       /scoreboard objectives setdisplay sidebar trust
+  5. Place one NPC near the village centre
+     (search "NPC" in Education Edition inventory)
+  6. Export the world and share via your school's platform
+
+  TIP: You do NOT have to pre-configure the NPCs. Leave them
+  blank and let students set up the dialogue themselves —
+  that is the core activity.
+
+---------------------------------------------------------------
+SHARING A WORLD WITH STUDENTS
+---------------------------------------------------------------
+  Option A — Direct share in the same session:
+    Students join your world via "Join World" in the
+    multiplayer menu. One teacher world, all students explore.
+
+  Option B — Export and distribute:
+    File → Export World → share the .mcworld file.
+    Students import it via File → Import.
+    Each student gets their own copy.
+
+  Option C — Students build from scratch:
+    Students create a new world themselves (Creative mode).
+    They type setup commands themselves.
+    Best for learning, takes a bit more time.
+
+---------------------------------------------------------------
+CLASSROOM COMMANDS — USEFUL SHORTCUTS
+---------------------------------------------------------------
+Run these from the teacher's game view to manage the class:
+
+  Give all students operator status (lets them run /commands):
+    /op @a
+
+  Switch all students to Adventure Mode for testing:
+    /gamemode adventure @a
+
+  Switch all students back to Creative for building:
+    /gamemode creative @a
+
+  Teleport all students to you:
+    /tp @a @s
+
+  Reset all students' scoreboards at once:
+    /scoreboard players set @a trust 0
+    /scoreboard players set @a questStarted 0
+
+  Show the trust scoreboard on everyone's screen:
+    /scoreboard objectives setdisplay sidebar trust
+
+  Clear the sidebar display:
+    /scoreboard objectives setdisplay sidebar
+
+---------------------------------------------------------------
+DIFFERENTATION — WHAT EACH STUDENT ACTUALLY DOES
+---------------------------------------------------------------
+
+  STRUGGLING STUDENTS (Tier 1):
+  ─────────────────────────────
+  → Give them a world with NPC already placed and buttons
+    already created. Their task: write the dialogue TEXT only.
+  → Have them focus on the paper design activity and oral
+    explanation rather than the command syntax.
+  → Key concept to assess: "What does position 0 mean?"
+
+  ON-TRACK STUDENTS (Tier 2):
+  ──────────────────────────
+  → Complete Examples 01, 02, and 03 in order.
+  → Build Elder Mira + Guard Rowan with full branching.
+  → Answer checkpoint questions in each example file.
+
+  ADVANCED STUDENTS (Tier 3):
+  ───────────────────────────
+  → Complete all four examples including the extension.
+  → Add a fourth NPC using /summon for a surprise ending.
+  → Explore /tellraw for styled dialogue with colour and bold.
+  → Challenge: can they build a TIMER mechanic using
+    scoreboard objectives add time dummy?
+
+---------------------------------------------------------------
+COMMON MISTAKES AND HOW TO FIX THEM
+---------------------------------------------------------------
+
+  PROBLEM: Button doesn't do anything when clicked
+  FIX: Check the "On-Click Command" field in the NPC editor.
+       The command must start with / (forward slash).
+       Also make sure the player is NOT in Creative Mode —
+       NPC interactions behave differently in Creative.
+       Switch to Adventure or Survival for testing.
+
+  PROBLEM: /execute command gives an error
+  FIX: Check for typos. The most common issues:
+       • Missing "run" before the actual command:
+           WRONG:  /execute if score @p trust matches 1 say hi
+           RIGHT:  /execute if score @p trust matches 1 run say hi
+       • Wrong selector: use @p for nearest player, @a for all
+       • Wrong matches syntax: use matches 1 (not == 1 or = 1)
+
+  PROBLEM: Scoreboard not created / "Unknown scoreboard" error
+  FIX: Run /scoreboard objectives add trust dummy FIRST.
+       This must be done before any command tries to read or
+       write the "trust" variable.
+
+  PROBLEM: Command Block not firing
+  FIX: Check three things:
+       1. Block type is correct (Impulse / Repeat / Chain)
+       2. "Always Active" is enabled (not "Needs Redstone")
+       3. For Chain blocks: they must be physically connected
+          to the previous block and facing the right direction
+
+  PROBLEM: Student gets the reward from Selene multiple times
+  FIX: Make sure the rewardGiven scoreboard is being SET to 1
+       after the first reward, and that the Repeat block
+       checks  if score @s rewardGiven matches 0  as a condition.
+
+  PROBLEM: Title/actionbar text isn't showing
+  FIX: The JSON format for /title is strict. Check that:
+       • Text is inside {"text":"..."} with double quotes
+       • No curly-quote characters (" ") — use straight quotes
+       • The command is on ONE line with no line breaks
+
+---------------------------------------------------------------
+EXIT TICKET — SUGGESTED ANSWERS
+---------------------------------------------------------------
+
+  Q1: What does "dialogue line 0" mean in your NPC story?
+  A: The first line shown — position 0 is always the start
+     of an ordered sequence, matching array index 0 in code.
+
+  Q2: What happens if a player accesses a trust-locked branch
+      without enough points?
+  A: The /execute if score condition evaluates to false, so
+     the command chain doesn't run. The player sees nothing
+     (or the locked/default NPC dialogue).
+
+  Q3: Name one way a Minecraft story differs from a book story.
+  A: Any valid answer — e.g.: player choices branch the
+     narrative; the world persists between sessions; the
+     player's actions affect what happens next; variables
+     (scoreboards) track player history.
+
+---------------------------------------------------------------
+LOOKING AHEAD — DAY 14
+---------------------------------------------------------------
+Day 14 builds on this lesson:
+  • Multi-NPC quest chains (extends Example 04)
+  • Scoreboard-tracked relationship variables
+  • Connecting narrative choices to world events:
+      /weather thunder  (trigger a storm when trust is broken)
+      /summon           (spawn goblins if player refused)
+      /fill             (open/seal a passage based on progress)
+
+Prep for Day 14:
+  • Students should save their Day 13 worlds
+  • Remind them to note their NPC names and scoreboard
+    variable names — they will expand on them in Day 14
+
+===============================================================

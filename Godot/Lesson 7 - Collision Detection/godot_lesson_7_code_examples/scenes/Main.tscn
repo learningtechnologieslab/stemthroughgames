@@ -1,0 +1,122 @@
+[gd_scene load_steps=8 format=3 uid="uid://main_day7"]
+
+[ext_resource type="Script"      path="res://scripts/Main.gd"    id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/Coin.tscn"   id="3_coin"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(640, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform1"]
+size = Vector2(160, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform2"]
+size = Vector2(120, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(20, 200)
+
+; ─────────────────────────────────────────────────────────────
+; Main scene layout:
+;
+;   Node2D (Main)         ← root, runs Main.gd
+;   ├── Player            ← the CharacterBody2D
+;   ├── Platforms         ← container for all static obstacles
+;   │   ├── Ground        ← floor (StaticBody2D + CollisionShape2D)
+;   │   ├── Platform1     ← raised platform
+;   │   ├── Platform2     ← higher platform
+;   │   └── LeftWall      ← invisible left boundary
+;   ├── Coins             ← container for all collectibles
+;   │   ├── Coin1
+;   │   ├── Coin2
+;   │   ├── Coin3
+;   │   └── Coin4
+;   └── HUD               ← CanvasLayer (stays fixed on screen)
+;       ├── ScoreLabel
+;       └── WinLabel
+; ─────────────────────────────────────────────────────────────
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+; ── PLAYER ────────────────────────────────────────────────────
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(80, 280)
+
+; ── PLATFORMS ─────────────────────────────────────────────────
+
+[node name="Platforms" type="Node2D" parent="."]
+
+; Ground — runs the full width of the screen
+[node name="Ground" type="StaticBody2D" parent="Platforms"]
+position = Vector2(320, 350)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Ground"]
+modulate = Color(0.35, 0.6, 0.35, 1)
+texture = null
+
+; Platform1 — mid-height, left side
+[node name="Platform1" type="StaticBody2D" parent="Platforms"]
+position = Vector2(180, 240)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform1"]
+shape = SubResource("RectangleShape2D_platform1")
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform1"]
+modulate = Color(0.35, 0.6, 0.35, 1)
+texture = null
+
+; Platform2 — higher, right side
+[node name="Platform2" type="StaticBody2D" parent="Platforms"]
+position = Vector2(460, 180)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform2"]
+shape = SubResource("RectangleShape2D_platform2")
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform2"]
+modulate = Color(0.35, 0.6, 0.35, 1)
+texture = null
+
+; LeftWall — invisible collision barrier
+[node name="LeftWall" type="StaticBody2D" parent="Platforms"]
+position = Vector2(0, 180)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+; ── COINS ─────────────────────────────────────────────────────
+; Four coins placed around the level for students to collect.
+; Coins on the ground = easy, coins on platforms = require jumping.
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(150, 310)
+
+[node name="Coin2" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(180, 210)
+
+[node name="Coin3" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(460, 150)
+
+[node name="Coin4" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(380, 310)
+
+; ── HUD ──────────────────────────────────────────────────────
+; CanvasLayer keeps the HUD fixed to the screen (not the world).
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="ScoreLabel" type="Label" parent="HUD"]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 200.0
+offset_bottom = 36.0
+text = "Score: 0"
+theme_override_font_sizes/font_size = 20
+
+[node name="WinLabel" type="Label" parent="HUD"]
+offset_left = 160.0
+offset_top = 140.0
+offset_right = 480.0
+offset_bottom = 200.0
+text = "You win!"
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+visible = false

@@ -1,0 +1,364 @@
+[gd_scene load_steps=12 format=3 uid="uid://day9main"]
+
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_gmanager"]
+[ext_resource type="Script" path="res://scripts/Player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/HUD.gd" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/Collectible.gd" id="4_collect"]
+[ext_resource type="Script" path="res://scripts/Hazard.gd" id="5_hazard"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1200, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(36, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(200, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collectible"]
+size = Vector2(28, 28)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hazard"]
+size = Vector2(80, 24)
+
+[node name="Main" type="Node" node_paths=PackedStringArray("player", "hud")]
+script = ExtResource("1_gmanager")
+player = NodePath("Player")
+hud = NodePath("HUD")
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["player"]]
+position = Vector2(120, 480)
+script = ExtResource("2_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Sprite2D" type="ColorRect" parent="Player"]
+offset_left = -18.0
+offset_top = -24.0
+offset_right = 18.0
+offset_bottom = 24.0
+color = Color(0.2, 0.5, 1.0, 1.0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+anchors_preset = 3
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 280.0
+offset_bottom = 120.0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HealthRow" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HealthIcon" type="Label" parent="HUD/MarginContainer/VBoxContainer/HealthRow"]
+layout_mode = 2
+text = "❤ "
+theme_override_font_sizes/font_size = 16
+
+[node name="HealthBar" type="ProgressBar" parent="HUD/MarginContainer/VBoxContainer/HealthRow"]
+custom_minimum_size = Vector2(140, 22)
+layout_mode = 2
+value = 100.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="HealthLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer/HealthRow"]
+layout_mode = 2
+text = "100 / 100"
+theme_override_font_sizes/font_size = 14
+
+[node name="ScoreRow" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScoreLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer/ScoreRow"]
+layout_mode = 2
+text = "Score: 0"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+
+[node name="StateLabel" type="Label" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "State: PLAYING"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+
+[node name="HintLabel" type="Label" parent="HUD"]
+anchors_preset = -1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+layout_mode = 0
+text = "[H] Damage  [E] Collect  [R] Restart  [A/D] Move  [Space] Jump"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.75, 0.75, 0.75, 1)
+horizontal_alignment = 1
+
+[node name="MessagePanel" type="Panel" parent="HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -60.0
+offset_right = 180.0
+offset_bottom = 60.0
+
+[node name="MessageLabel" type="Label" parent="HUD/MessagePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "MESSAGE"
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Floor" type="StaticBody2D" parent="World"]
+position = Vector2(576, 620)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Floor"]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="FloorVisual" type="ColorRect" parent="World/Floor"]
+offset_left = -600.0
+offset_top = -20.0
+offset_right = 600.0
+offset_bottom = 20.0
+color = Color(0.35, 0.25, 0.15, 1.0)
+
+[node name="Platform1" type="StaticBody2D" parent="World"]
+position = Vector2(300, 460)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Visual" type="ColorRect" parent="World/Platform1"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.35, 0.25, 0.15, 1.0)
+
+[node name="Platform2" type="StaticBody2D" parent="World"]
+position = Vector2(700, 360)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform2"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Visual" type="ColorRect" parent="World/Platform2"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.35, 0.25, 0.15, 1.0)
+
+[node name="Platform3" type="StaticBody2D" parent="World"]
+position = Vector2(980, 280)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform3"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Visual" type="ColorRect" parent="World/Platform3"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.35, 0.25, 0.15, 1.0)
+
+[node name="Collectibles" type="Node2D" parent="World"]
+
+[node name="Coin1" type="Area2D" parent="World/Collectibles"]
+position = Vector2(280, 430)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin1"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin1"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin2" type="Area2D" parent="World/Collectibles"]
+position = Vector2(380, 430)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin2"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin2"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin3" type="Area2D" parent="World/Collectibles"]
+position = Vector2(680, 330)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin3"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin3"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin4" type="Area2D" parent="World/Collectibles"]
+position = Vector2(760, 330)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin4"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin4"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin5" type="Area2D" parent="World/Collectibles"]
+position = Vector2(960, 250)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin5"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin5"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin6" type="Area2D" parent="World/Collectibles"]
+position = Vector2(200, 580)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin6"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin6"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin7" type="Area2D" parent="World/Collectibles"]
+position = Vector2(500, 580)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin7"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin7"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin8" type="Area2D" parent="World/Collectibles"]
+position = Vector2(800, 580)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin8"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin8"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin9" type="Area2D" parent="World/Collectibles"]
+position = Vector2(1050, 580)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin9"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin9"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Coin10" type="Area2D" parent="World/Collectibles"]
+position = Vector2(1100, 250)
+script = ExtResource("4_collect")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Collectibles/Coin10"]
+shape = SubResource("RectangleShape2D_collectible")
+
+[node name="Visual" type="ColorRect" parent="World/Collectibles/Coin10"]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+color = Color(1.0, 0.85, 0.0, 1.0)
+
+[node name="Hazards" type="Node2D" parent="World"]
+
+[node name="Spike1" type="Area2D" parent="World/Hazards"]
+position = Vector2(450, 602)
+script = ExtResource("5_hazard")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Hazards/Spike1"]
+shape = SubResource("RectangleShape2D_hazard")
+
+[node name="Visual" type="ColorRect" parent="World/Hazards/Spike1"]
+offset_left = -40.0
+offset_top = -12.0
+offset_right = 40.0
+offset_bottom = 12.0
+color = Color(0.9, 0.1, 0.1, 1.0)
+
+[node name="Spike2" type="Area2D" parent="World/Hazards"]
+position = Vector2(900, 602)
+script = ExtResource("5_hazard")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Hazards/Spike2"]
+shape = SubResource("RectangleShape2D_hazard")
+
+[node name="Visual" type="ColorRect" parent="World/Hazards/Spike2"]
+offset_left = -40.0
+offset_top = -12.0
+offset_right = 40.0
+offset_bottom = 12.0
+color = Color(0.9, 0.1, 0.1, 1.0)
+
+[node name="Background" type="ColorRect" parent="World"]
+z_index = -10
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.08, 0.10, 0.16, 1.0)

@@ -1,0 +1,197 @@
+===============================================================
+  EXAMPLE 03 — Full Branching Dialogue System
+  Day 13: Dialogue Systems & Game Narrative
+===============================================================
+
+WHAT YOU WILL BUILD
+-------------------
+A complete two-level branching dialogue system with:
+  • 1 NPC (Elder Mira) who opens the story
+  • 2 player choices (Help / Refuse)
+  • 2 outcomes with spoken responses
+  • A second NPC (Guard Rowan) whose dialogue changes based
+    on the player's first choice
+
+This matches the full dialogue tree you drew on paper!
+
+---------------------------------------------------------------
+PART A — SETUP COMMANDS
+Run these in chat BEFORE placing any Command Blocks.
+---------------------------------------------------------------
+
+Step A1 — Create all scoreboard variables:
+
+    /scoreboard objectives add trust dummy
+    /scoreboard objectives add questStarted dummy
+
+Step A2 — Give yourself operator permissions (if needed):
+
+    /op @s
+
+Step A3 — Switch to Creative Mode to build:
+
+    /gamemode creative
+
+---------------------------------------------------------------
+PART B — NPC #1: ELDER MIRA
+Place this NPC near the centre of your village.
+---------------------------------------------------------------
+
+NPC Name:
+    Elder Mira
+
+NPC Dialogue Text:
+    Welcome to the village, traveler.
+    Goblins have been raiding our farms every night.
+    We desperately need a brave adventurer.
+    Will you help protect us?
+
+Button 1:
+    Label:           I will help the village!
+    On-Click Command: /scoreboard players set @p trust 1
+
+Button 2:
+    Label:           I have my own business.
+    On-Click Command: /scoreboard players set @p trust 0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMMAND BLOCK CHAIN FOR ELDER MIRA'S RESPONSE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Place these Command Blocks directly behind the NPC (hidden
+inside a wall or underground). Each block must be connected
+to the next in a chain (set the block type to CHAIN).
+
+  Block 1 — Impulse, Always Active, Unconditional:
+    Type:    Impulse
+    Setting: Always Active
+    Command: /scoreboard objectives add trust dummy
+             (This re-creates trust if the world is fresh —
+              safe to run even if it already exists, just ignore
+              the "already exists" message)
+
+  Block 2 — Chain, Conditional, Always Active:
+  (This fires if Button 1 was clicked — trust = 1)
+    Command: /execute if score @p trust matches 1 run title @p actionbar {"text":"Elder Mira: Thank you, brave traveler! Speak to Guard Rowan at the gate.","color":"green"}
+
+  Block 3 — Chain, Conditional, Always Active:
+  (This fires if Button 2 was clicked — trust = 0)
+    Command: /execute if score @p trust matches 0 run title @p actionbar {"text":"Elder Mira: A pity. The village will suffer for your refusal.","color":"red"}
+
+  Block 4 — Chain, Unconditional, Always Active:
+  (This always fires — marks the quest as started)
+    Command: /scoreboard players set @p questStarted 1
+
+HOW TO CONNECT BUTTON TO COMMAND BLOCK CHAIN
+──────────────────────────────────────────────
+  1. Right-click Block 1 and note its coordinates (press F3
+     to see your XYZ position, or use /tp to find it)
+  2. In Elder Mira's NPC editor, set each button's
+     On-Click Command to:
+       /setblock <X> <Y> <Z> command_block
+     then immediately set a Repeat block to power it.
+
+  SIMPLER APPROACH (recommended for beginners):
+  Use the NPC's On-Click command to run /scoreboard players set,
+  then have a REPEAT Command Block nearby that continuously
+  checks the score and fires the title command:
+
+  Repeat Command Block (always running, unconditional):
+    /execute as @a if score @s trust matches 1 if score @s questStarted matches 1 run title @s actionbar {"text":"Speak to Guard Rowan at the gate!","color":"green","bold":true}
+
+---------------------------------------------------------------
+PART C — NPC #2: GUARD ROWAN (at the village gate)
+Place this NPC about 20 blocks away from Elder Mira.
+---------------------------------------------------------------
+
+NPC Name:
+    Guard Rowan
+
+NPC Dialogue Text (TRUST = 1 version — helpful):
+    Ah, you must be the adventurer Elder Mira sent!
+    The goblins come from the Dark Forest to the east.
+    I will open the gate for you.
+    Good luck, and may the light guide you!
+
+  Button:
+    Label:           Let's go!
+    On-Click Command: /say Guard Rowan opens the gate.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MAKING GUARD ROWAN'S DIALOGUE CHANGE BASED ON TRUST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Minecraft NPC editors don't swap dialogue text automatically,
+but you can use a Command Block chain near Rowan to show
+a different message via the title/actionbar system:
+
+  Repeat Block A — For trusted players (trust = 1):
+    /execute as @a[distance=..4] if score @s trust matches 1 run title @s actionbar {"text":"Guard Rowan: The gate is open for you, hero!","color":"aqua"}
+
+  Repeat Block B — For refused players (trust = 0):
+    /execute as @a[distance=..4] if score @s trust matches 0 run title @s actionbar {"text":"Guard Rowan: Elder Mira said you refused. I cannot let you through.","color":"yellow"}
+
+  The distance=..4 means: only trigger for players within
+  4 blocks of the Command Block (i.e., standing near Rowan).
+
+---------------------------------------------------------------
+PART D — THE FULL COMMAND LIST (copy-paste reference)
+---------------------------------------------------------------
+
+SETUP (run once in chat):
+  /scoreboard objectives add trust dummy
+  /scoreboard objectives add questStarted dummy
+  /scoreboard objectives setdisplay sidebar trust
+  /gamemode creative
+
+ELDER MIRA — NPC Button 1 On-Click:
+  /scoreboard players set @p trust 1
+
+ELDER MIRA — NPC Button 2 On-Click:
+  /scoreboard players set @p trust 0
+
+ELDER MIRA — Response Command Block (trust = 1):
+  /execute if score @p trust matches 1 run title @p actionbar {"text":"Thank you! Speak to Guard Rowan.","color":"green"}
+
+ELDER MIRA — Response Command Block (trust = 0):
+  /execute if score @p trust matches 0 run title @p actionbar {"text":"A pity. The village will suffer.","color":"red"}
+
+GUARD ROWAN — Nearby Repeat Block (trust = 1):
+  /execute as @a[distance=..4] if score @s trust matches 1 run title @s actionbar {"text":"Guard Rowan: The gate is open for you, hero!","color":"aqua"}
+
+GUARD ROWAN — Nearby Repeat Block (trust = 0):
+  /execute as @a[distance=..4] if score @s trust matches 0 run title @s actionbar {"text":"Guard Rowan: I cannot let you through.","color":"yellow"}
+
+RESET (use to restart the quest for testing):
+  /scoreboard players set @p trust 0
+  /scoreboard players set @p questStarted 0
+
+---------------------------------------------------------------
+WHAT IS HAPPENING — THE ARRAY & INDEX CONNECTION
+---------------------------------------------------------------
+The branching dialogue tree maps directly to IF/ELSE logic:
+
+  Paper design:             Minecraft commands:
+  ─────────────────         ──────────────────────────────────────
+  if choice == "Help"   →   /execute if score @p trust matches 1
+    show helpResponse   →   run title @p actionbar "Thank you!"
+
+  else (choice==Refuse) →   /execute if score @p trust matches 0
+    show refuseResponse →   run title @p actionbar "A pity..."
+
+The scoreboard variable "trust" is storing 0 or 1 —
+exactly the same role as  var trust = 0  in GDScript.
+
+---------------------------------------------------------------
+CHECKPOINT QUESTIONS
+---------------------------------------------------------------
+  ✏  What command checks if a player's trust score is exactly 1?
+  ✏  What does distance=..4 do in the Guard Rowan command?
+  ✏  What is the equivalent of  trust += 1  in Minecraft?
+      (Hint: look at the scoreboard reference in Example 02)
+  ✏  How would you add a THIRD NPC whose dialogue unlocks
+      only when questStarted = 1 AND trust = 1?
+
+===============================================================
+  NEXT: Open 04_extension_quest_chain for the advanced version!
+===============================================================

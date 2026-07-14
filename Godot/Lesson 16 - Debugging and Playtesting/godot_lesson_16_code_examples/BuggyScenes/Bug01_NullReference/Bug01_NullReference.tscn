@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://bug01"]
+
+[ext_resource type="Script" path="res://BuggyScenes/Bug01_NullReference/Bug01_NullReference.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(40, 40)
+
+[node name="Bug01_NullReference" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(320, 240)
+
+[node name="Sprite" type="ColorRect" parent="Player"]
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+color = Color(0.2, 0.5, 1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 400.0
+offset_bottom = 40.0
+text = "Bug 01: Null Reference Error"
+
+[node name="InstructionLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 40.0
+offset_right = 620.0
+offset_bottom = 120.0
+text = "Press SPACE. The game will crash with a null reference error.
+Read the error in the Debugger panel.
+TASK: Find and fix the wrong node path in the script."
+autowrap_mode = 3

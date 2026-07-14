@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://day12hud"]
+
+[ext_resource type="Script" path="res://scripts/HUD.gd" id="1_hud"]
+
+; ─────────────────────────────────────────────────────────────────────────────
+; HUD.tscn  –  Heads-Up Display scene
+;
+; Scene tree:
+;   HUD  (CanvasLayer)
+;   └── HUDBackground   (ColorRect  – semi-transparent bar)
+;   └── HBoxContainer   (arranges labels in a horizontal row)
+;         ├── ScoreLabel   (Label)
+;         ├── HealthLabel  (Label)
+;         └── TimerLabel   (Label)
+;
+; How CanvasLayer works:
+;   Everything inside a CanvasLayer is drawn on top of all 3D/2D world content
+;   and is NOT affected by the camera.  The HUD stays fixed on screen even
+;   when the player character moves across the level.
+; ─────────────────────────────────────────────────────────────────────────────
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="HUDBackground" type="ColorRect" parent="."]
+z_index = -1
+position = Vector2(0, 0)
+size = Vector2(640, 52)
+color = Color(0, 0, 0, 0.5)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+position = Vector2(10, 8)
+size = Vector2(620, 36)
+theme_override_constants/separation = 30
+
+[node name="ScoreLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(160, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
+tooltip_text = "Updated by HUD.update_score()"
+
+[node name="HealthLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "HP: 100"
+tooltip_text = "Updated by HUD.update_health()"
+
+[node name="TimerLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Time: 60"
+tooltip_text = "Updated every frame in HUD._process(delta)"

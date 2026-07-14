@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="16" fill="#1B3A6B"/>
+  <text x="64" y="52" font-family="monospace" font-size="36" fill="#2ECC71" text-anchor="middle" font-weight="bold">if</text>
+  <text x="64" y="90" font-family="monospace" font-size="18" fill="#F4B942" text-anchor="middle">{...}</text>
+</svg>

@@ -1,0 +1,160 @@
+[gd_scene load_steps=12 format=3 uid="uid://day11game"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/Enemy_Chase.gd" id="2_chase"]
+[ext_resource type="Script" path="res://scripts/Enemy_StateMachine.gd" id="3_state"]
+
+; ── Sub-resources: shared shapes ─────────────────────────────────────────────
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(800, 20)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(20, 600)
+
+; ── Root Scene ────────────────────────────────────────────────────────────────
+[node name="Game" type="Node2D"]
+
+; ── World / Level layout ──────────────────────────────────────────────────────
+[node name="World" type="Node2D" parent="."]
+
+[node name="Background" type="ColorRect" parent="World"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 800.0
+offset_bottom = 600.0
+color = Color(0.12, 0.14, 0.2, 1)
+
+[node name="GridLines" type="Node2D" parent="World"]
+
+; ── Floor and Wall colliders ─────────────────────────────────────────────────
+[node name="Walls" type="StaticBody2D" parent="World"]
+
+[node name="WallTop" type="CollisionShape2D" parent="World/Walls"]
+position = Vector2(400, 5)
+shape = SubResource("2")
+
+[node name="WallBottom" type="CollisionShape2D" parent="World/Walls"]
+position = Vector2(400, 595)
+shape = SubResource("2")
+
+[node name="WallLeft" type="CollisionShape2D" parent="World/Walls"]
+position = Vector2(5, 300)
+shape = SubResource("3")
+
+[node name="WallRight" type="CollisionShape2D" parent="World/Walls"]
+position = Vector2(795, 300)
+shape = SubResource("3")
+
+; ── Player ────────────────────────────────────────────────────────────────────
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(400, 300)
+script = ExtResource("1_player")
+
+[node name="Sprite" type="ColorRect" parent="Player"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.2, 0.85, 0.3, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("1")
+
+[node name="NameLabel" type="Label" parent="Player"]
+offset_left = -30.0
+offset_top = -36.0
+offset_right = 30.0
+offset_bottom = -20.0
+text = "PLAYER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+
+; ── Enemy: Basic Chase ────────────────────────────────────────────────────────
+[node name="EnemyChase" type="CharacterBody2D" parent="."]
+position = Vector2(100, 100)
+script = ExtResource("2_chase")
+
+[node name="Sprite" type="ColorRect" parent="EnemyChase"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.9, 0.2, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyChase"]
+shape = SubResource("1")
+
+[node name="NameLabel" type="Label" parent="EnemyChase"]
+offset_left = -30.0
+offset_top = -36.0
+offset_right = 30.0
+offset_bottom = -20.0
+text = "CHASER"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+
+[node name="DebugLabel" type="Label" parent="EnemyChase"]
+offset_left = -50.0
+offset_top = 20.0
+offset_right = 80.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 9
+theme_override_colors/font_color = Color(1, 1, 0.4, 1)
+
+; ── Enemy: State Machine (Patrol / Chase) ─────────────────────────────────────
+[node name="EnemyStateMachine" type="CharacterBody2D" parent="."]
+position = Vector2(650, 480)
+script = ExtResource("3_state")
+
+[node name="Sprite" type="ColorRect" parent="EnemyStateMachine"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+color = Color(0.9, 0.5, 0.1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyStateMachine"]
+shape = SubResource("1")
+
+[node name="NameLabel" type="Label" parent="EnemyStateMachine"]
+offset_left = -40.0
+offset_top = -36.0
+offset_right = 40.0
+offset_bottom = -20.0
+text = "PATROL/CHASE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+
+[node name="DebugLabel" type="Label" parent="EnemyStateMachine"]
+offset_left = -50.0
+offset_top = 20.0
+offset_right = 80.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 9
+theme_override_colors/font_color = Color(1, 1, 0.4, 1)
+
+[node name="DetectVisual" type="Node2D" parent="EnemyStateMachine"]
+
+; ── HUD ───────────────────────────────────────────────────────────────────────
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="TitleLabel" type="Label" parent="HUD"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 500.0
+offset_bottom = 30.0
+text = "Day 11 – Enemy Behavior & Simple AI  |  WASD or Arrow Keys to move"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.7, 0.85, 1.0, 1)
+
+[node name="Legend" type="Label" parent="HUD"]
+offset_left = 8.0
+offset_top = 575.0
+offset_right = 792.0
+offset_bottom = 595.0
+text = "🟢 Player (you)   🔴 Chaser (always follows)   🟠 Patrol/Chase (state machine)   Yellow text = live debug info"
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)

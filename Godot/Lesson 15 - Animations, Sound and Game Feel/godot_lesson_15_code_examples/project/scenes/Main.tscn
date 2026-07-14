@@ -1,0 +1,107 @@
+[gd_scene load_steps=7 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/Coin.tscn" id="3_coin"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(1152, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(240, 20)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+; ── WORLD ─────────────────────────────────────────────────────
+
+[node name="World" type="Node2D" parent="."]
+
+; Ground platform
+[node name="Ground" type="StaticBody2D" parent="World"]
+position = Vector2(576, 632)
+
+[node name="GroundShape" type="CollisionShape2D" parent="World/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+; Floating platform 1
+[node name="Platform1" type="StaticBody2D" parent="World"]
+position = Vector2(250, 480)
+
+[node name="Platform1Shape" type="CollisionShape2D" parent="World/Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+; Floating platform 2
+[node name="Platform2" type="StaticBody2D" parent="World"]
+position = Vector2(576, 380)
+
+[node name="Platform2Shape" type="CollisionShape2D" parent="World/Platform2"]
+shape = SubResource("RectangleShape2D_platform")
+
+; Floating platform 3
+[node name="Platform3" type="StaticBody2D" parent="World"]
+position = Vector2(900, 480)
+
+[node name="Platform3Shape" type="CollisionShape2D" parent="World/Platform3"]
+shape = SubResource("RectangleShape2D_platform")
+
+; ── PLAYER ────────────────────────────────────────────────────
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(100, 560)
+
+; ── COINS ─────────────────────────────────────────────────────
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(250, 440)
+
+[node name="Coin2" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(576, 340)
+
+[node name="Coin3" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(900, 440)
+
+[node name="Coin4" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(400, 590)
+
+[node name="Coin5" parent="Coins" instance=ExtResource("3_coin")]
+position = Vector2(700, 590)
+
+; ── BACKGROUND MUSIC ─────────────────────────────────────────
+
+[node name="BGMusic" type="AudioStreamPlayer" parent="."]
+autoplay = false
+volume_db = -6.0
+; TODO: Set stream = preload("res://audio/bg_music.ogg")
+; Then set autoplay = true once you have the audio file
+
+; ── HUD ───────────────────────────────────────────────────────
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="CoinLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 300.0
+offset_bottom = 52.0
+text = "Coins: 0 / 5"
+theme_override_font_sizes/font_size = 22
+
+[node name="MuteLabel" type="Label" parent="HUD"]
+offset_left = 20.0
+offset_top = 52.0
+offset_right = 500.0
+offset_bottom = 84.0
+modulate = Color(1, 0.3, 0.3, 1)
+text = ""
+theme_override_font_sizes/font_size = 18
+
+[node name="ControlsLabel" type="Label" parent="HUD"]
+offset_right = 1152.0
+offset_bottom = 30.0
+text = "Arrow Keys / WASD: Move  |  Space: Jump  |  M: Toggle Mute  |  R: Restart"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+modulate = Color(1, 1, 1, 0.6)

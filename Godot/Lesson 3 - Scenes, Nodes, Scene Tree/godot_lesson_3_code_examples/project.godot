@@ -1,0 +1,23 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; but feel free to make changes as long as you follow the syntax.
+
+config_version=5
+
+[application]
+
+config/name="STEM through Games – Day 3: Scene Tree Explorer"
+config/description="An interactive lesson illustrating Godot's scene/node hierarchy for middle school students."
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.2", "Forward Plus")
+config/icon="res://assets/sprites/coin.png"
+
+[display]
+
+window/size/viewport_width=1152
+window/size/viewport_height=648
+window/size/resizable=true
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

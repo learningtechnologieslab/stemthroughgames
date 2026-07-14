@@ -1,0 +1,68 @@
+# ============================================================
+#  EXAMPLE 1 — Basic Teleport Commands
+#  Lesson: Day 2 — Spatial Thinking & 3D Coordinates
+#  Tool:   Minecraft Education Edition (Chat / Command Block)
+# ============================================================
+#
+#  HOW TO USE
+#  ----------
+#  1. Open Minecraft Education Edition and load the starter world.
+#  2. Press  T  to open the chat bar.
+#  3. Type any command below exactly as shown (no # lines).
+#  4. Press ENTER to run it.
+#
+#  WHAT TO WATCH
+#  -------------
+#  After each teleport, press F3 and read the XYZ display.
+#  Does it match the coordinates you typed?
+#
+# ============================================================
+
+# ------ PART A: Absolute Coordinates ------
+# Format:  /tp @s  X  Y  Z
+#          @s = "self" (the player running the command)
+
+# Teleport to the world origin at sea level
+/tp @s 0 64 0
+
+# Teleport 100 blocks East of origin (X increases going East)
+/tp @s 100 64 0
+
+# Teleport 200 blocks South of origin (Z increases going South)
+/tp @s 0 64 200
+
+# Teleport 100 East AND 200 South at the same time
+/tp @s 100 64 200
+
+# Go underground — Y=20 is below sea level (Y=64)
+/tp @s 0 20 0
+
+# Reach the sky limit (Y=255 in older worlds, Y=319 in 1.18+)
+/tp @s 0 255 0
+
+# Go West and North of origin (negative X and Z)
+/tp @s -100 64 -100
+
+
+# ------ PART B: Student Challenge Locations ------
+# Each location below is used in the Scavenger Hunt activity.
+
+# Hidden chest — 50 East, sea level, 50 North of origin
+/tp @s 50 64 -50
+
+# Top of the hill — adjust Y until you are standing on solid ground
+/tp @s 80 75 80
+
+# Secret cave entrance — deep underground
+/tp @s 0 15 0
+
+
+# ------ PART C: Questions to Answer in Your Notebook ------
+# After each teleport, answer these in your notebook:
+#
+#  1. Which direction did you move?  (East / West / North / South / Up / Down)
+#  2. Which coordinate number changed?  (X, Y, or Z?)
+#  3. Did that number increase or decrease?
+#
+# Example answer for  /tp @s 100 64 0  from origin:
+#   → Moved East.  X changed.  X increased (0 → 100).

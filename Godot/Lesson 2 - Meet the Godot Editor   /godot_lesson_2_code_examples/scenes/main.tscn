@@ -1,0 +1,148 @@
+[gd_scene load_steps=8 format=3 uid="uid://main_scene"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/coord_label.gd" id="3_label"]
+[ext_resource type="Texture2D" uid="uid://player_tex" path="res://assets/sprites/player.svg" id="4_player_tex"]
+[ext_resource type="Texture2D" uid="uid://star_tex" path="res://assets/sprites/star.svg" id="5_star_tex"]
+[ext_resource type="Texture2D" uid="uid://target_tex" path="res://assets/sprites/target.svg" id="6_target_tex"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="GridLines" type="Node2D" parent="."]
+
+[node name="Axes" type="Node2D" parent="."]
+
+[node name="Player" type="Sprite2D" parent="."]
+position = Vector2(512, 300)
+texture = ExtResource("4_player_tex")
+script = ExtResource("2_player")
+
+[node name="Stars" type="Node2D" parent="."]
+
+[node name="Star1" type="Sprite2D" parent="Stars"]
+position = Vector2(200, 150)
+texture = ExtResource("5_star_tex")
+
+[node name="Star2" type="Sprite2D" parent="Stars"]
+position = Vector2(800, 100)
+texture = ExtResource("5_star_tex")
+
+[node name="Star3" type="Sprite2D" parent="Stars"]
+position = Vector2(150, 450)
+texture = ExtResource("5_star_tex")
+
+[node name="Star4" type="Sprite2D" parent="Stars"]
+position = Vector2(900, 480)
+texture = ExtResource("5_star_tex")
+
+[node name="Star5" type="Sprite2D" parent="Stars"]
+position = Vector2(512, 80)
+texture = ExtResource("5_star_tex")
+
+[node name="Target" type="Sprite2D" parent="."]
+position = Vector2(300, 200)
+texture = ExtResource("6_target_tex")
+modulate = Color(1, 1, 1, 0.7)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CoordDisplay" type="Panel" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 340.0
+offset_bottom = 220.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/CoordDisplay"]
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 330.0
+offset_bottom = 212.0
+
+[node name="TitleLabel" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "📍 Coordinate Explorer"
+theme_override_font_sizes/font_size = 15
+
+[node name="PlayerCoord" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "Player:  x = 512 ,  y = 300"
+theme_override_font_sizes/font_size = 14
+script = ExtResource("3_label")
+
+[node name="Sep1" type="HSeparator" parent="UI/CoordDisplay/VBox"]
+
+[node name="QuadrantLabel" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "Quadrant: Center"
+theme_override_font_sizes/font_size = 13
+
+[node name="TargetCoord" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "🎯 Target:  x = 300 ,  y = 200"
+theme_override_font_sizes/font_size = 13
+
+[node name="DistanceLabel" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "Distance to target: —"
+theme_override_font_sizes/font_size = 13
+
+[node name="Sep2" type="HSeparator" parent="UI/CoordDisplay/VBox"]
+
+[node name="ScoreLabel" type="Label" parent="UI/CoordDisplay/VBox"]
+text = "⭐ Stars collected: 0 / 5"
+theme_override_font_sizes/font_size = 13
+
+[node name="Controls" type="Panel" parent="UI"]
+offset_left = 10.0
+offset_top = 230.0
+offset_right = 340.0
+offset_bottom = 380.0
+
+[node name="VBox2" type="VBoxContainer" parent="UI/Controls"]
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 330.0
+offset_bottom = 140.0
+
+[node name="ControlsTitle" type="Label" parent="UI/Controls/VBox2"]
+text = "🎮 Controls"
+theme_override_font_sizes/font_size = 14
+
+[node name="ControlsText" type="Label" parent="UI/Controls/VBox2"]
+text = "Arrow Keys / WASD — Move\nClick anywhere — Teleport\nR — Reset to (512, 300)\nT — New random target\nG — Toggle grid"
+theme_override_font_sizes/font_size = 12
+
+[node name="ChallengePanel" type="Panel" parent="UI"]
+offset_left = 674.0
+offset_top = 10.0
+offset_right = 1014.0
+offset_bottom = 200.0
+
+[node name="VBox3" type="VBoxContainer" parent="UI/ChallengePanel"]
+offset_left = 10.0
+offset_top = 8.0
+offset_right = 330.0
+offset_bottom = 185.0
+
+[node name="ChallengeTitle" type="Label" parent="UI/ChallengePanel/VBox3"]
+text = "🧩 Challenge"
+theme_override_font_sizes/font_size = 15
+
+[node name="ChallengeText" type="Label" parent="UI/ChallengePanel/VBox3"]
+autowrap_mode = 3
+text = "Move the robot to these positions. What do you notice?\n\n• (0, 0)\n• (1024, 0)\n• (0, 600)\n• (512, 300)\n• (1024, 600)"
+theme_override_font_sizes/font_size = 12
+
+[node name="MessageLabel" type="Label" parent="UI"]
+offset_left = 362.0
+offset_top = 560.0
+offset_right = 662.0
+offset_bottom = 592.0
+horizontal_alignment = 1
+text = ""
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.95, 0.9, 0.3, 1)
+
+[node name="SandboxBtn" type="Button" parent="UI"]
+offset_left = 824.0
+offset_top = 560.0
+offset_right = 1014.0
+offset_bottom = 592.0
+text = "🧪 Open Sandbox →"

@@ -1,0 +1,16 @@
+# Input map configuration for Day 13 project
+# Godot reads this from project.godot [input] section.
+# This file documents the required input actions.
+#
+# To set up in Godot:
+#   Project → Project Settings → Input Map
+#   Add these action names and assign the listed keys.
+#
+# Action Name    | Keys
+# ───────────────┼──────────────────────────────────
+# move_left      | A, Left Arrow
+# move_right     | D, Right Arrow
+# move_up        | W, Up Arrow
+# move_down      | S, Down Arrow
+# interact       | E, Space, Enter
+# ui_accept      | Space, Enter (built-in)
